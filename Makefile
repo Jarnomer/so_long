@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/10 08:33:46 by jmertane          #+#    #+#              #
-#    Updated: 2024/02/17 19:02:27 by jmertane         ###   ########.fr        #
+#    Updated: 2024/02/19 17:37:11 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ BONUSFLG	:=	.bonus
 DEBUGFLG	:=	.debug
 
 MLXDIR		:=	mlx/
-MLX42		:=	mlx/build/libmlx42.a
+LIBMLX		:=	mlx/build/libmlx42.a
 
 RM			:=	rm -rf
 AR			:=	ar -rcs
@@ -32,7 +32,7 @@ CC			:=	cc
 CFLAGS		:=	-Wall -Werror -Wextra
 DEBUGFLAGS	=	-g -fsanitize=address
 DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPSDIR)$*.d
-MLXFLAGS	:=	-ldl -lglfw -pthread -lm
+MLXFLAGS	=	-ldl -lglfw -pthread -lm
 SCREENCLR	:=	printf "\033c"
 SLEEP		:=	sleep .20
 
@@ -47,7 +47,9 @@ FILES		:=	main \
 				free \
 				error
 
-BONUS		:=	anim
+BONUS		:=	anim \
+				enemy \
+				ai
 
 HEADERS		:=	so_long \
 				textures \
@@ -76,9 +78,9 @@ R			=	\033[31m	# red
 Y			=	\033[33m	# yellow
 
 all: $(NAME)
-$(NAME): $(MLX42) $(OBJS)
-	@make libft
-	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(MLX42) -o $@
+
+$(NAME): $(LIBMLX) $(OBJS) $(LIBFT)
+	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $@
 	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
 	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
 	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS)$(T)\n"
@@ -86,20 +88,20 @@ $(NAME): $(MLX42) $(OBJS)
 	@echo "$(V)Successfully compiled binary: $(G)$(B)$2$(T)\n"
 
 bonus: $(BONUSFLG)
-$(BONUSFLG): $(MLX42) $(OBJS_BNS)
-	@make libft && make mlx && touch $@
-	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(MLX42) -o $(BONUSBIN)
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
+
+$(BONUSFLG): $(LIBMLX) $(OBJS_BNS) $(LIBFT)
+	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $(BONUSBIN)
+	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP) && touch $@
 	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
 	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS)$(T)\n"
 	@echo "$(V)Using minilibx flags: $(G)$(MLXFLAGS)$(T)\n"
 	@echo "$(V)Successfully compiled binary: $(G)$(B)$(BONUSBIN)$(T)\n"
 
 debug: $(DEBUGFLG)
-$(DEBUGFLG): $(MLX42) $(OBJS_DEBUG)
-	@make libft && make mlx && touch $@
-	@$(CC) $(CFLAGS) $(DEBUGFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(MLX42) -o $(DEBUGBIN)
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
+
+$(DEBUGFLG): $(LIBMLX) $(OBJS_DEBUG) $(LIBFT)
+	@$(CC) $(CFLAGS) $(DEBUGFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $(DEBUGBIN)
+	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP) && touch $@
 	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
 	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS) $(DEBUGFLAGS)$(T)\n"
 	@echo "$(V)Using minilibx flags: $(G)$(MLXFLAGS)$(T)\n"
@@ -117,7 +119,7 @@ $(OBJSDIR)%.o: %.c | $(OBJSDIR) $(DEPSDIR)
 		echo "$(C)$(B)MAKE START!$(T)\n$(G)$(B)$(F)$(T)\n"; \
 		echo "$(T)$(V) $<$(T)\t$(C)>>>>>>>>\t$(G)$(B)$@$(T)"; fi
 
-$(MLX42):
+$(LIBMLX):
 ifeq ("$(wildcard $(MLXDIR))", "")
 	@echo "$(G)$(B)$(MLXDIR)$(T)$(V) not found, commencing download.$(T)\n"
 	@git clone https://github.com/codam-coding-college/MLX42.git $(MLXDIR)
@@ -125,31 +127,38 @@ else
 	@echo "\n$(V)Skipping download, $(G)$(B)$(MLXDIR)$(T)$(V) exists.$(T)\n"
 endif
 	@echo "\n$(V)Building $(G)$(B)MLX42$(T)$(V) binary...$(T)\n"
-	cmake $(MLXDIR) -B $(MLXDIR)/build && make -C $(MLXDIR)/build -j4
+	@cmake $(MLXDIR) -B $(MLXDIR)/build && make -C $(MLXDIR)/build -j4
 
-libft:
-	@echo "\n$(V)Building $(G)$(B)$(LIBFTBIN)$(T)$(V) binary...$(T)"
+$(LIBFT): force
 	@make --quiet -C $(LIBFTDIR) all
+
+force:
+	@true
 
 clean:
 	@$(SCREENCLR) && echo "$(C)$(B)\nCLEAN START!\n$(G)$(F)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(LIBFTBIN)$(T)"
-	@echo "\n$(V)Removing object and dependency file(s) for $(G)$(B)$(NAME)$(T)\n"
+	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
+	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(MLXDIR)$(T)\n"
+	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(NAME)$(T)\n"
 	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRORTXT) $(BONUSFLG) $(DEBUGFLG)
-	@make --quiet -C $(LIBFTDIR) clean && $(RM) $(MLXDIR)/build
+	@make --quiet -C $(LIBFTDIR) clean
 	@echo "$(G)$(B)$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
 
 fclean: clean
 	@echo "$(C)$(B)\nFCLEAN START!\n$(G)$(F)$(T)\n"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(LIBFTBIN)$(T)\n"
+	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
+	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(MLXDIR)$(T)\n"
 	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(NAME)$(T)"
 	@$(RM) $(NAME) $(BONUSBIN) $(DEBUGBIN)
-	@make --quiet -C $(LIBFTDIR) fclean
+	@make --quiet -C $(LIBFTDIR) fclean && $(RM) $(MLXDIR)/build
 	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)" && $(SLEEP)
 
 re: fclean all
 
 reb: fclean bonus
+
+nm:
+	@norminette $(SRCS) $(SRCS_BNS)
 
 $(OBJSDIR) $(DEPSDIR):
 	@mkdir -p $@/$(BONUSDIR)
@@ -157,4 +166,4 @@ $(OBJSDIR) $(DEPSDIR):
 $(DEPS):
 	include $(wildcard $(DEPS))
 
-.PHONY: all libft bonus debug clean fclean re reb
+.PHONY: all libft force bonus debug clean fclean re reb

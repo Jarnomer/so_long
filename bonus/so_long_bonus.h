@@ -24,13 +24,16 @@
 # include <fcntl.h>
 # include <string.h>
 # include <errno.h>
+# include <stdlib.h>
 
-# define WINDOW_TITLE	"so_long"
-# define ANIMATE_TIMER	0.15
+# define WINDOW_TITLE		"so_long"
+# define ANIMATE_TIMER		0.15
+# define ENEMY_FREQUENCY	20
 
 enum e_mapcodes
 {
 	PLAYER = 80,
+	ENEMY = 88,
 	PICKUP = 67,
 	EMPTY = 48,
 	WALL = 49,
@@ -71,6 +74,7 @@ typedef struct s_mapinfo
 
 typedef struct s_solong
 {
+	bool				gameover;
 	char				**images;
 	void				*window;
 	int					width;
@@ -79,7 +83,6 @@ typedef struct s_solong
 	float				uptime;
 	float				timer;
 	void				*counter;
-	void				(*anim)(void *);
 	struct s_mapinfo	*map;
 	struct s_asset		*assets;
 }	t_solong;
@@ -90,6 +93,7 @@ void	read_map(t_mapinfo *map, t_solong *game);
 void	test_map(t_mapinfo *map, t_solong *game);
 void	load_assets(t_solong *game);
 void	draw_assets(t_solong *game);
+void	draw_enemies(t_solong *game);
 void	draw_image(char *tex, int x, int y, t_solong *game);
 void	play_game(t_solong *game);
 void	error_logger(char *errmsg, t_solong *game);
@@ -97,5 +101,6 @@ void	error_occured(int errcode, char *errmsg, t_solong *game);
 void	self_destruct(t_solong *game);
 void	print_moves(int moves, t_solong *game);
 void	animate_eyes(void *param);
+void	move_enemies(void *param);
 
 #endif

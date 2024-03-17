@@ -14,15 +14,15 @@
 
 static void	randomize_wall(int x, int y, t_solong *game)
 {
-	static int	i = 0;
+	int	i;
 
-	if (i % 3 == 0)
+	i = rand() % 3;
+	if (i == 0)
 		draw_image(TEX_WALL_1, x, y, game);
-	else if (i % 3 == 1)
+	else if (i == 1)
 		draw_image(TEX_WALL_2, x, y, game);
 	else
 		draw_image(TEX_WALL_3, x, y, game);
-	i++;
 }
 
 static void	draw_map(t_solong *game)
@@ -100,4 +100,5 @@ void	draw_assets(t_solong *game)
 {
 	draw_frame(game);
 	draw_map(game);
+	draw_enemies(game);
 }

@@ -30,6 +30,5 @@ void	init_game(t_solong *game, char *file)
 	if (!game->map || init_mapinfo(game->map, file))
 		error_occured(ERR_MEM, MSG_MEM, game);
 	game->cellsize = CELL_SIZE;
-	game->anim = &animate_eyes;
 	game->timer = ANIMATE_TIMER;
 }

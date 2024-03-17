@@ -60,7 +60,7 @@ void	animate_eyes(void *param)
 	t_solong	*game;
 
 	game = param;
-	if (update_animation(game) == 0)
+	if (update_animation(game) == 0 && !game->gameover)
 	{
 		if (increase == true)
 		{

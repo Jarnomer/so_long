@@ -12,6 +12,15 @@
 
 #include "so_long_bonus.h"
 
+static bool	game_over(t_mapinfo *map)
+{
+	if (map->matrix[map->play_y][map->play_x] == ENEMY
+		|| (map->matrix[map->play_y][map->play_x] == EXIT
+		&& map->escstat == true))
+		return (true);
+	return (false);
+}
+
 static void	close_window(void *param)
 {
 	t_solong	*game;
@@ -53,23 +62,20 @@ static void	control_keys(mlx_key_data_t keydata, void *param)
 
 	game = param;
 	map = game->map;
-	if (keydata.action == MLX_PRESS
-		|| keydata.action == MLX_REPEAT)
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
 			close_window(game);
-		if (keydata.key == MLX_KEY_W)
+		else if (keydata.key == MLX_KEY_W)
 			move_player(map->play_y - 1, map->play_x, game);
-		if (keydata.key == MLX_KEY_A)
+		else if (keydata.key == MLX_KEY_A)
 			move_player(map->play_y, map->play_x - 1, game);
-		if (keydata.key == MLX_KEY_S)
+		else if (keydata.key == MLX_KEY_S)
 			move_player(map->play_y + 1, map->play_x, game);
-		if (keydata.key == MLX_KEY_D)
+		else if (keydata.key == MLX_KEY_D)
 			move_player(map->play_y, map->play_x + 1, game);
 	}
-	if (map->play_y == map->exit_y
-		&& map->play_x == map->exit_x
-		&& map->escstat == true)
+	if (game_over(game->map))
 		close_window(game);
 }
 
@@ -77,6 +83,7 @@ void	play_game(t_solong *game)
 {
 	mlx_close_hook(game->window, &close_window, game);
 	mlx_key_hook(game->window, &control_keys, game);
-	mlx_loop_hook(game->window, game->anim, game);
+	mlx_loop_hook(game->window, animate_eyes, game);
+	mlx_loop_hook(game->window, move_enemies, game);
 	mlx_loop(game->window);
 }
