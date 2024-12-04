@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
 static int	init_mapinfo(t_mapinfo *map, char *file)
 {
-	ft_bzero(map, sizeof(*map));
 	map->fd = -1;
 	map->file = file;
 	map->read = ft_strdup("");
@@ -26,7 +25,7 @@ static int	init_mapinfo(t_mapinfo *map, char *file)
 void	init_game(t_solong *game, char *file)
 {
 	ft_bzero(game, sizeof(*game));
-	game->map = malloc(sizeof(t_mapinfo));
+	game->map = ft_calloc(1, sizeof(t_mapinfo));
 	if (!game->map || init_mapinfo(game->map, file) == -1)
 		error_occured(ERR_MEM, MSG_MEM, game);
 	game->cellsize = CELL_SIZE;

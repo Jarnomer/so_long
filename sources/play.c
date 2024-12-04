@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
 static void	close_window(void *param)
 {
 	t_solong	*game;
 
 	game = param;
-	mlx_close_window(game->window);
+	mlx_close_window(game->mlx);
 	self_destruct(game);
 	exit(NOERROR);
 }
@@ -26,22 +26,22 @@ static void	move_player(int dst_y, int dst_x, t_solong *game)
 {
 	if (game->map->matrix[dst_y][dst_x] == WALL
 		|| (game->map->matrix[dst_y][dst_x] == EXIT
-		&& game->map->escstat == false))
+		&& game->map->is_escapable == false))
 		return ;
-	draw_image(TEX_EMPTY, game->map->play_x, game->map->play_y, game);
-	draw_image(TEX_PLAYER, dst_x, dst_y, game);
+	draw_image(IMG_FLOOR, game->map->play_x, game->map->play_y, game);
+	draw_image(IMG_PLAYER, dst_x, dst_y, game);
 	ft_printf("Moves: %d\n", ++game->map->moves);
 	game->map->play_x = dst_x;
 	game->map->play_y = dst_y;
 	if (game->map->matrix[dst_y][dst_x] == PICKUP)
 	{
-		game->map->matrix[dst_y][dst_x] = EMPTY;
+		game->map->matrix[dst_y][dst_x] = FLOOR;
 		game->map->pickups--;
 		if (!game->map->pickups)
 		{
-			draw_image(TEX_EXIT_OPEN, game->map->exit_x,
+			draw_image(IMG_EXIT_OPEN, game->map->exit_x,
 				game->map->exit_y, game);
-			game->map->escstat = true;
+			game->map->is_escapable = true;
 		}
 	}
 }
@@ -53,8 +53,7 @@ static void	control_keys(mlx_key_data_t keydata, void *param)
 
 	game = param;
 	map = game->map;
-	if (keydata.action == MLX_PRESS
-		|| keydata.action == MLX_REPEAT)
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
 			close_window(game);
@@ -69,13 +68,13 @@ static void	control_keys(mlx_key_data_t keydata, void *param)
 	}
 	if (map->play_y == map->exit_y
 		&& map->play_x == map->exit_x
-		&& map->escstat == true)
+		&& map->is_escapable == true)
 		close_window(game);
 }
 
 void	play_game(t_solong *game)
 {
-	mlx_close_hook(game->window, &close_window, game);
-	mlx_key_hook(game->window, &control_keys, game);
-	mlx_loop(game->window);
+	mlx_close_hook(game->mlx, &close_window, game);
+	mlx_key_hook(game->mlx, &control_keys, game);
+	mlx_loop(game->mlx);
 }

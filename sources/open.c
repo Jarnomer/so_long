@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
 static void	read_file(t_mapinfo *map, t_solong *game)
 {

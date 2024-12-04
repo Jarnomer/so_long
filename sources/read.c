@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
 static void	update_exit_info(int col, int row, t_mapinfo *map)
 {
@@ -33,7 +33,7 @@ static void	check_elements(t_mapinfo *map, int row, t_solong *game)
 	i = 0;
 	while (map->matrix[row][i])
 	{
-		if (map->matrix[row][i] == EMPTY
+		if (map->matrix[row][i] == FLOOR
 			|| map->matrix[row][i] == WALL)
 			continue ;
 		else if (map->matrix[row][i] == PICKUP)

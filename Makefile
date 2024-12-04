@@ -97,7 +97,7 @@ SOURCEDIR += $(addprefix $(BONUSDIR)/, $(SOURCEDIR))
 HEADERDIR += $(addprefix $(BONUSDIR)/, $(HEADERDIR))
 
 INCS := $(addprefix -I, $(HEADERDIR) $(LIBFTDIR)/$(HEADERDIR))
-INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR)/MLX42)
+INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR))
 
 DEPS := $(OBJECTS:.o=.d) $(OBJECTS_BONUS:.o=.d)
 
@@ -123,17 +123,17 @@ $(BONUSFLAG): $(OBJECTS_BONUS)
 	@touch $(BONUSFLAG)
 
 $(OBJECTS) $(OBJECTS_BONUS): $(LIBFTDIR)/$(LIBFTBIN)
-
-libft: $(LIBFTDIR)/$(LIBFTBIN)
-
-$(LIBFTDIR)/$(LIBFTBIN): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+# $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+$(LIBFTDIR)/$(LIBFTBIN):
 	@make -C $(LIBFTDIR) all
-
-mlx: $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 
 $(MLXDIR)/$(BUILDDIR)/$(MLXBIN):
 	@cmake $(MLXDIR) -B $(MLXDIR)/$(BUILDDIR) && \
 	make -C $(MLXDIR)/$(BUILDDIR) -j4
+
+libft: $(LIBFTDIR)/$(LIBFTBIN)
+
+mlx: $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 
 run: all
 	$(SCREENCLEAR)
@@ -224,7 +224,7 @@ $(foreach build, $(BUILDDIR), $(eval $(call build_cmd, $(build))))
 # **************************************************************************** #
 
 .PHONY: all libft bonus re reb
-.PHONY: mlx debug leaks run nm
+.PHONY: mlx debug leaks nm run
 .PHONY: clean fclean
 
 .SILENT:

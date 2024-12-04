@@ -10,7 +10,53 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
+
+static const char *const	g_textures[GAME_ASSETS] = {
+	TEX_CORNER_UL,
+	TEX_CORNER_UR,
+	TEX_CORNER_DL,
+	TEX_CORNER_DR,
+	TEX_EDGE_UP,
+	TEX_EDGE_DOWN,
+	TEX_EDGE_LEFT,
+	TEX_EDGE_RIGHT,
+	TEX_FLOOR,
+	TEX_WALL_1,
+	TEX_WALL_2,
+	TEX_WALL_3,
+	TEX_PICKUP,
+	TEX_EXIT_OPEN,
+	TEX_EXIT_CLOSE,
+	TEX_PLAYER
+};
+
+static void	load_textures(t_solong *game)
+{
+	mlx_texture_t	*tex;
+	int				fd;
+	int				i;
+
+	i = 0;
+	while (i < GAME_ASSETS)
+	{
+		fd = open(g_textures[i], O_RDONLY);
+		if (fd == -1)
+			error_occured(ERR_TEX, (char *)g_textures[i], game);
+		tex = mlx_load_png(g_textures[i]);
+		if (!tex)
+			error_occured(ERR_MLX, MSG_MLX, game);
+		game->img[i] = mlx_texture_to_image(game->mlx, tex);
+		if (!game->img[i])
+			error_occured(ERR_MLX, MSG_MLX, game);
+		if (game->cellsize != CELL_SIZE && !mlx_resize_image(
+				game->img[i], game->cellsize, game->cellsize))
+			error_occured(ERR_MLX, MSG_MLX, game);
+		mlx_delete_texture(tex);
+		close(fd);
+		i++;
+	}
+}
 
 static void	alter_window_settings(t_mapinfo *map, t_solong *game)
 {
@@ -18,95 +64,27 @@ static void	alter_window_settings(t_mapinfo *map, t_solong *game)
 		game->cellsize = game->height / map->height;
 	else
 		game->cellsize = game->width / map->width;
-	mlx_set_window_size(game->window,
+	mlx_set_window_size(game->mlx,
 		game->cellsize * map->width,
 		game->cellsize * map->height);
-	mlx_set_window_limit(game->window,
+	mlx_set_window_limit(game->mlx,
 		game->cellsize * map->width,
 		game->cellsize * map->height,
 		game->width, game->height);
 }
 
-static void	append_asset(t_asset **lst, t_asset *new, char *file)
-{
-	t_asset	*tmp;
-
-	new->fd = -1;
-	new->file = file;
-	if (!*lst)
-		*lst = new;
-	else
-	{
-		tmp = *lst;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = new;
-	}
-}
-
-static void	create_asset_list(t_solong *game)
-{
-	t_asset	*new;
-	int		i;
-
-	i = 0;
-	while (i < GAME_ASSETS)
-	{
-		new = ft_calloc(1, sizeof(t_asset));
-		if (!new)
-			error_occured(ERR_MEM, MSG_MEM, game);
-		append_asset(&game->assets, new, game->images[i]);
-		new->fd = open(new->file, O_RDONLY);
-		if (new->fd == -1)
-			error_occured(ERR_TEX, new->file, game);
-		new->tex = mlx_load_png(new->file);
-		if (!new->tex)
-			error_occured(ERR_MLX, MSG_MLX, game);
-		new->img = mlx_texture_to_image(game->window, new->tex);
-		if (!new->img)
-			error_occured(ERR_MLX, MSG_MLX, game);
-		if (game->cellsize != CELL_SIZE && !mlx_resize_image(
-				new->img, game->cellsize, game->cellsize))
-			error_occured(ERR_MLX, MSG_MLX, game);
-		i++;
-	}
-}
-
-static void	insert_filenames(t_solong *game)
-{
-	game->images[0] = TEX_CORNER_UL;
-	game->images[1] = TEX_CORNER_UR;
-	game->images[2] = TEX_CORNER_DL;
-	game->images[3] = TEX_CORNER_DR;
-	game->images[4] = TEX_EDGE_UP;
-	game->images[5] = TEX_EDGE_DOWN;
-	game->images[6] = TEX_EDGE_LEFT;
-	game->images[7] = TEX_EDGE_RIGHT;
-	game->images[8] = TEX_EMPTY;
-	game->images[9] = TEX_WALL_1;
-	game->images[10] = TEX_WALL_2;
-	game->images[11] = TEX_WALL_3;
-	game->images[12] = TEX_PICKUP;
-	game->images[13] = TEX_EXIT_OPEN;
-	game->images[14] = TEX_EXIT_CLOSE;
-	game->images[15] = TEX_PLAYER;
-}
-
 void	load_assets(t_solong *game)
 {
-	game->window = mlx_init(
-			CELL_SIZE * game->map->width,
-			CELL_SIZE * game->map->height,
-			WINDOW_TITLE, false);
-	if (!game->window)
+	int	width;
+	int	height;
+
+	width = CELL_SIZE * game->map->width;
+	height = CELL_SIZE * game->map->height;
+	game->mlx = mlx_init(width, height, "so_long", false);
+	if (!game->mlx)
 		error_occured(ERR_MLX, MSG_MLX, game);
 	mlx_get_monitor_size(0, &game->width, &game->height);
-	game->images = ft_calloc(GAME_ASSETS + 1, sizeof(char *));
-	if (!game->images)
-		error_occured(ERR_MEM, MSG_MEM, game);
-	if ((game->map->width * CELL_SIZE > game->width)
-		|| (game->map->height * CELL_SIZE > game->height))
+	if (width > game->width || height > game->height)
 		alter_window_settings(game->map, game);
-	insert_filenames(game);
-	create_asset_list(game);
+	load_textures(game);
 }

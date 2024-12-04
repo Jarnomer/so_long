@@ -10,16 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
-static void	check(t_element elem, char *errmsg, t_mapinfo *map, t_solong *game)
+static void	verify(int c, char *errmsg, t_mapinfo *map, t_solong *game)
 {
 	int	i;
 
 	i = 0;
 	while (i < map->height)
 	{
-		if (ft_strchr(map->duplex[i], elem))
+		if (ft_strchr(map->duplex[i], c))
 			error_occured(ERR_MAP, errmsg, game);
 		i++;
 	}
@@ -62,7 +62,7 @@ static void	clear_pickups(char **duplex, int x, int y)
 void	test_map(t_mapinfo *map, t_solong *game)
 {
 	clear_pickups(map->duplex, map->play_x, map->play_y);
-	check(PICKUP, MSG_PICKUP, map, game);
+	verify(PICKUP, MSG_PICKUP, map, game);
 	clear_exit(map->duplex, map->play_x, map->play_y);
-	check(EXIT, MSG_EXIT, map, game);
+	verify(EXIT, MSG_EXIT, map, game);
 }

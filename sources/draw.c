@@ -10,18 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <so_long.h>
 
 static void	randomize_wall(int x, int y, t_solong *game)
 {
 	static int	i = 0;
 
 	if (i % 3 == 0)
-		draw_image(TEX_WALL_1, x, y, game);
+		draw_image(IMG_WALL_1, x, y, game);
 	else if (i % 3 == 1)
-		draw_image(TEX_WALL_2, x, y, game);
+		draw_image(IMG_WALL_2, x, y, game);
 	else
-		draw_image(TEX_WALL_3, x, y, game);
+		draw_image(IMG_WALL_3, x, y, game);
 	i++;
 }
 
@@ -38,14 +38,14 @@ static void	draw_map(t_solong *game)
 		{
 			if (game->map->matrix[y][x] == WALL)
 				randomize_wall(x, y, game);
-			else if (game->map->matrix[y][x] == EMPTY)
-				draw_image(TEX_EMPTY, x, y, game);
+			else if (game->map->matrix[y][x] == FLOOR)
+				draw_image(IMG_FLOOR, x, y, game);
 			else if (game->map->matrix[y][x] == PICKUP)
-				draw_image(TEX_PICKUP, x, y, game);
+				draw_image(IMG_PICKUP, x, y, game);
 			else if (game->map->matrix[y][x] == EXIT)
-				draw_image(TEX_EXIT_CLOSE, x, y, game);
+				draw_image(IMG_EXIT_CLOSE, x, y, game);
 			else if (game->map->matrix[y][x] == PLAYER)
-				draw_image(TEX_PLAYER, x, y, game);
+				draw_image(IMG_PLAYER, x, y, game);
 		}
 	}
 }
@@ -57,41 +57,24 @@ static void	draw_frame(t_solong *game)
 	i = 0;
 	while (++i < game->map->width - 1)
 	{
-		draw_image(TEX_EDGE_UP, i, 0, game);
-		draw_image(TEX_EDGE_DOWN, i, game->map->height - 1, game);
+		draw_image(IMG_EDGE_UP, i, 0, game);
+		draw_image(IMG_EDGE_DOWN, i, game->map->height - 1, game);
 	}
-	draw_image(TEX_CORNER_UL, 0, 0, game);
-	draw_image(TEX_CORNER_UR, i, 0, game);
+	draw_image(IMG_CORNER_UL, 0, 0, game);
+	draw_image(IMG_CORNER_UR, i, 0, game);
 	i = 0;
 	while (++i < game->map->height - 1)
 	{
-		draw_image(TEX_EDGE_LEFT, 0, i, game);
-		draw_image(TEX_EDGE_RIGHT, game->map->width - 1, i, game);
+		draw_image(IMG_EDGE_LEFT, 0, i, game);
+		draw_image(IMG_EDGE_RIGHT, game->map->width - 1, i, game);
 	}
-	draw_image(TEX_CORNER_DL, 0, i, game);
-	draw_image(TEX_CORNER_DR, game->map->width - 1, i, game);
+	draw_image(IMG_CORNER_DL, 0, i, game);
+	draw_image(IMG_CORNER_DR, game->map->width - 1, i, game);
 }
 
-void	draw_image(char *tex, int x, int y, t_solong *game)
+void	draw_image(t_image i, int x, int y, t_solong *game)
 {
-	t_asset	*tmp;
-	int		len;
-
-	if (x != 0)
-		x *= game->cellsize;
-	if (y != 0)
-		y *= game->cellsize;
-	tmp = game->assets;
-	len = ft_strlen(tex);
-	while (tmp)
-	{
-		if (!ft_strncmp(tex, tmp->file, len))
-			break ;
-		tmp = tmp->next;
-	}
-	if (!tmp || !tmp->img)
-		error_occured(ERR_TEX, tmp->file, game);
-	if (mlx_image_to_window(game->window, tmp->img, x, y) == -1)
+	if (mlx_image_to_window(game->mlx, game->img[i], x, y) == -1)
 		error_occured(ERR_MLX, MSG_MLX, game);
 }
 
