@@ -1,18 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isdigit.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/08 15:27:15 by jmertane          #+#    #+#             */
-/*   Updated: 2023/11/26 10:48:37 by jmertane         ###   ########.fr       */
+/*   Created: 2024/01/07 19:13:51 by jmertane          #+#    #+#             */
+/*   Updated: 2024/02/11 15:52:13 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "so_long.h"
 
-int	ft_isdigit(int c)
+int	main(int argc, char **argv)
 {
-	return ('0' <= c && c <= '9');
+	t_solong	game;
+
+	if (argc != 2)
+		error_occured(ERR_ARGC, MSG_ARGC, NULL);
+	init_game(&game, argv[1]);
+	open_map(game.map, &game);
+	read_map(game.map, &game);
+	test_map(game.map, &game);
+	load_assets(&game);
+	draw_assets(&game);
+	play_game(&game);
+	self_destruct(&game);
+	return (NOERROR);
 }

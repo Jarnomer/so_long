@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read.c                                             :+:      :+:    :+:   */
+/*   read_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 10:38:47 by jmertane          #+#    #+#             */
-/*   Updated: 2024/02/11 11:00:39 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/02/11 21:18:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include "so_long_bonus.h"
 
 static void	update_exit_info(int row, int col, t_mapinfo *map)
 {
@@ -43,7 +43,7 @@ static void	check_chars(t_mapinfo *map, int row, t_solong *game)
 		else if (map->matrix[row][i] == EXIT)
 			update_exit_info(row, i, map);
 		else
-			error_logger(MSG_CHAR, game);
+			error_logger(MSG_ELEM, game);
 	}
 }
 

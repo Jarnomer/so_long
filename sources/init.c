@@ -19,7 +19,7 @@ static int	init_mapinfo(t_mapinfo *map, char *file)
 	map->file = file;
 	map->read = ft_strdup("");
 	if (!map->read)
-		return (1);
+		return (-1);
 	return (0);
 }
 
@@ -27,7 +27,7 @@ void	init_game(t_solong *game, char *file)
 {
 	ft_bzero(game, sizeof(*game));
 	game->map = malloc(sizeof(t_mapinfo));
-	if (!game->map || init_mapinfo(game->map, file))
+	if (!game->map || init_mapinfo(game->map, file) == -1)
 		error_occured(ERR_MEM, MSG_MEM, game);
 	game->cellsize = CELL_SIZE;
 }

@@ -13,12 +13,12 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include "./mlx/include/MLX42/MLX42.h"
+# include <MLX42.h>
+# include <libft.h>
 
-# include "./libft/libft.h"
-# include "textures.h"
-# include "styles.h"
-# include "error.h"
+# include <textures.h>
+# include <styles.h>
+# include <error.h>
 
 # include <stdbool.h>
 # include <fcntl.h>
@@ -27,14 +27,14 @@
 
 # define WINDOW_TITLE	"so_long"
 
-enum e_mapcodes
+typedef enum e_element
 {
 	PLAYER = 80,
 	PICKUP = 67,
 	EMPTY = 48,
 	WALL = 49,
 	EXIT = 69
-};
+};	t_element;
 
 typedef struct s_asset
 {

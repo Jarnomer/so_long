@@ -10,160 +10,213 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		:=	so_long
-BONUSBIN	:=	so_long
-DEBUGBIN	:=	so_long
-OBJSDIR		:=	build/
-DEPSDIR		:=	.deps/
-BONUSDIR	:=	bonus/
-LIBFTDIR	:=	libft/
-LIBFT		:=	libft/libft.a
-ERRORTXT	:=	error.txt
-BONUSEXT	:=	_bonus
-BONUSFLG	:=	.bonus
-DEBUGFLG	:=	.debug
+# **************************************************************************** #
+#    VARIABLES
+# **************************************************************************** #
 
-MLXDIR		:=	mlx/
-LIBMLX		:=	mlx/build/libmlx42.a
+NAME := so_long
 
-RM			:=	rm -rf
-AR			:=	ar -rcs
-CC			:=	cc
-CFLAGS		:=	-Wall -Werror -Wextra
-DEBUGFLAGS	=	-g -fsanitize=address
-DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPSDIR)$*.d
-MLXFLAGS	=	-ldl -lglfw -pthread -lm
-SCREENCLR	:=	printf "\033c"
-SLEEP		:=	sleep .20
+SOURCEDIR := sources
+HEADERDIR := include
+BUILDDIR  := build
+BUILDLOG  := build.log
 
-FILES		:=	main \
-				init \
-				open \
-				read \
-				test \
-				load \
-				draw \
-				play \
-				free \
-				error
+BONUSDIR  := ./bonus
+BONUSFLAG := .bonus
 
-BONUS		:=	anim \
-				enemy \
-				ai
+LIBFTDIR  := ./libft
+LIBFTBIN  := libft.a
 
-HEADERS		:=	so_long \
-				textures \
-				styles \
-				error \
+MLXDIR    := ./mlx
+MLXBIN    := libmlx42.a
 
-SRCS		:=	$(addsuffix .c, $(FILES))
-SRCS		+=	$(addsuffix .h, $(HEADERS))
-SRCS_BNS	:=	$(addsuffix $(BONUSEXT).c, $(FILES) $(BONUS))
-SRCS_BNS	+=	$(addsuffix $(BONUSEXT).h, $(HEADERS))
-SRCS_BNS	:=	$(addprefix $(BONUSDIR), $(SRCS_BNS))
-SRCS_DEBUG	:=	$(SRCS)
+TESTCASE  := ./$(NAME) maps/valid1.ber
 
-OBJS		=	$(patsubst %.c, $(OBJSDIR)%.o, $(SRCS))
-OBJS_BNS	=	$(patsubst %.c, $(OBJSDIR)%.o, $(SRCS_BNS))
-OBJS_DEBUG	=	$(patsubst %.c, $(OBJSDIR)%.o, $(SRCS_DEBUG))
-DEPS		=	$(patsubst %.c, $(DEPSDIR)%.d, $(SRCS) $(SRCS_BNS))
+# **************************************************************************** #
+#    COMMANDS
+# **************************************************************************** #
 
-F			=	=================================================
-B			=	\033[1m		# bold
-T			=	\033[0m		# reset
-G			=	\033[32m	# green
-V			=	\033[35m	# violet
-C			=	\033[36m	# cyan
-R			=	\033[31m	# red
-Y			=	\033[33m	# yellow
+RM          := rm -rf
+SCREENCLEAR := printf "\033c"
+
+# **************************************************************************** #
+#    COMPILATION
+# **************************************************************************** #
+
+CC         := cc
+CFLAGS     := -Wall -Werror -Wextra
+CPPFLAGS   := -c -MMD -MP
+DEBUGFLAGS := -g -fsanitize=address
+MAKEFLAGS  += --no-print-directory -j4
+MLXFLAGS   = -ldl -lglfw -pthread -lm
+
+# **************************************************************************** #
+#    VALGRIND
+# **************************************************************************** #
+
+LEAKSLOG := leaks.log
+VLGFLAGS := --leak-check=full \
+            --show-leak-kinds=all \
+            --track-origins=yes \
+            --track-fds=yes \
+            --trace-children=yes \
+            --log-file=$(LEAKSLOG) \
+            --verbose \
+            --quiet
+
+# **************************************************************************** #
+#    SOURCES
+# **************************************************************************** #
+
+SOURCES := main \
+           init \
+           open \
+           read \
+           test \
+           load \
+           draw \
+           play \
+           free \
+           error
+
+SOURCES_BONUS := $(SOURCES) \
+                 anim \
+                 enemy \
+                 ai
+
+SOURCES := $(addsuffix .c, $(SOURCES))
+
+SOURCES_BONUS := $(addsuffix _bonus.c, $(SOURCES_BONUS))
+
+OBJECTS := $(addprefix $(BUILDDIR)/, $(SOURCES:.c=.o))
+
+OBJECTS_BONUS = $(addprefix $(BUILDDIR)/, $(SOURCES_BONUS:.c=.o))
+
+SOURCEDIR += $(addprefix $(BONUSDIR)/, $(SOURCEDIR))
+
+INCS := $(addprefix -I, $(HEADERDIR) $(BONUSDIR)/$(HEADERDIR))
+INCS += $(addprefix -I, $(LIBFTDIR)/$(HEADERDIR))
+INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR)/MLX42)
+
+DEPS := $(OBJECTS:.o=.d) $(OBJECTS_BONUS:.o=.d)
+
+vpath %.c $(SOURCEDIR)
+
+# **************************************************************************** #
+#    RULES
+# **************************************************************************** #
 
 all: $(NAME)
 
-$(NAME): $(LIBMLX) $(OBJS) $(LIBFT)
-	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $@
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
-	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
-	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS)$(T)\n"
-	@echo "$(V)Using minilibx flags: $(G)$(MLXFLAGS)$(T)\n"
-	@echo "$(V)Successfully compiled binary: $(G)$(B)$2$(T)\n"
+$(NAME): $(OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
+	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
+	printf "$(V)$(B)Binary:$(T)$(Y) $(NAME) $(T)\n"
 
-bonus: $(BONUSFLG)
+bonus: $(BONUSFLAG)
 
-$(BONUSFLG): $(LIBMLX) $(OBJS_BNS) $(LIBFT)
-	@$(CC) $(CFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $(BONUSBIN)
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP) && touch $@
-	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
-	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS)$(T)\n"
-	@echo "$(V)Using minilibx flags: $(G)$(MLXFLAGS)$(T)\n"
-	@echo "$(V)Successfully compiled binary: $(G)$(B)$(BONUSBIN)$(T)\n"
+$(BONUSFLAG): $(OBJECTS_BONUS)
+	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
+	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
+	printf "$(V)$(B)Binary:$(T)$(Y) $(BONUSBIN) $(T)\n"
+	@touch $(BONUSFLAG)
 
-debug: $(DEBUGFLG)
+$(OBJECTS) $(OBJECTS_BONUS): $(LIBFTDIR)/$(LIBFTBIN)
 
-$(DEBUGFLG): $(LIBMLX) $(OBJS_DEBUG) $(LIBFT)
-	@$(CC) $(CFLAGS) $(DEBUGFLAGS) $^ $(LIBFT) $(MLXFLAGS) $(LIBMLX) -o $(DEBUGBIN)
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP) && touch $@
-	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
-	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS) $(DEBUGFLAGS)$(T)\n"
-	@echo "$(V)Using minilibx flags: $(G)$(MLXFLAGS)$(T)\n"
-	@echo "$(V)Successfully compiled binary: $(G)$(B)$2$(T)\n"
+# $(OBJECTS) $(OBJECTS_BONUS): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 
-$(OBJSDIR)%.o: %.c | $(OBJSDIR) $(DEPSDIR)
-	@if ! $(CC) $(CFLAGS) $(DEPFLAGS) $< -o $@ 2> $(ERRORTXT); then \
-		echo "$(R)$(B)\nMAKEFILE TERMINATED!\n$(F)$(T)\n"; \
-		echo "$(V)Unable to create object file: $(R)$(B)$@$(T)\n"; \
-		echo "$(R)$(B)ERROR\t>>>>>>>>$(T)$(Y)\n"; sed '$$d' $(ERRORTXT); \
-		echo "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; fi
-	@if [ $(CNTR) ]; then \
-		$(eval CNTR=$(shell echo $$(($(CNTR)+1)))) \
-		echo "$(T)$(V) $<$(T)\t$(C)>>>>>>>>\t$(G)$(B)$@$(T)"; else \
-		echo "$(C)$(B)MAKE START!$(T)\n$(G)$(B)$(F)$(T)\n"; \
-		echo "$(T)$(V) $<$(T)\t$(C)>>>>>>>>\t$(G)$(B)$@$(T)"; fi
+libft: $(LIBFTDIR)/$(LIBFTBIN)
 
-$(LIBMLX):
+$(LIBFTDIR)/$(LIBFTBIN): 
+	@make -C $(LIBFTDIR) all
+
+run: all
+	$(SCREENCLEAR)
+	$(TESTCASE)
+
+re: fclean
+	make all
+
+reb: fclean
+	make bonus
+
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: re
+
+mlx: $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+
+$(MLXDIR)/$(BUILDDIR)/$(MLXBIN):
 ifeq ("$(wildcard $(MLXDIR))", "")
 	@echo "$(G)$(B)$(MLXDIR)$(T)$(V) not found, commencing download.$(T)\n"
 	@git clone https://github.com/codam-coding-college/MLX42.git $(MLXDIR)
 else
 	@echo "\n$(V)Skipping download, $(G)$(B)$(MLXDIR)$(T)$(V) exists.$(T)\n"
 endif
-	@echo "\n$(V)Building $(G)$(B)MLX42$(T)$(V) binary...$(T)\n"
-	@cmake $(MLXDIR) -B $(MLXDIR)/build && make -C $(MLXDIR)/build -j4
+	@cmake $(MLXDIR) -B $(MLXDIR)/$(BUILDDIR) && make -C $(MLXDIR)/$(BUILDDIR) -j4
 
-$(LIBFT): force
-	@make --quiet -C $(LIBFTDIR) all
 
-force:
-	@true
+# **************************************************************************** #
+#    BUILD
+# **************************************************************************** #
+
+define build_cmd
+$1/%.o: %.c | $(BUILDDIR)
+	if ! $(CC) $(CFLAGS) $(CPPFLAGS) $(INCS) $$< -o $$@ 2> $(BUILDLOG); then \
+		printf "$(R)$(B)\nError: \
+		$(V)Unable to create object file: \
+		$(R)$(B)$$@$(Y)\n\n"; \
+		sed '$$d' $(BUILDLOG); exit 1 ; \
+	else \
+		printf "$(C)$(B)Object: $(G)$$@ $(T)\n"; \
+	fi
+endef
+
+# **************************************************************************** #
+#    CLEAN
+# **************************************************************************** #
 
 clean:
-	@$(SCREENCLR) && echo "$(C)$(B)\nCLEAN START!\n$(G)$(F)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(MLXDIR)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(NAME)$(T)\n"
-	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRORTXT) $(BONUSFLG) $(DEBUGFLG)
-	@make --quiet -C $(LIBFTDIR) clean
-	@echo "$(G)$(B)$(F)$(C)\nFINISHED!$(T)\n" && $(SLEEP)
+	@make -C $(LIBFTDIR) fclean
+	$(call delete_cmd, $(BUILDDIR), $(BUILDLOG), $(LEAKSLOG))
+	@$(RM) $(BONUSFLAG)
 
 fclean: clean
-	@echo "$(C)$(B)\nFCLEAN START!\n$(G)$(F)$(T)\n"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(MLXDIR)$(T)\n"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(NAME)$(T)"
-	@$(RM) $(NAME) $(BONUSBIN) $(DEBUGBIN)
-	@make --quiet -C $(LIBFTDIR) fclean && $(RM) $(MLXDIR)/build
-	@echo "$(G)$(B)\n$(F)$(C)\nFINISHED!$(T)" && $(SLEEP)
+	$(call delete_cmd, $(NAME) $(BONUSBIN))
 
-re: fclean all
+define delete_cmd
+	printf "$(R)$(B)Delete:$(T)$(Y)$1$2$3$4$5$(T)\n"
+	$(RM) $1 $2 $3 $4 $5
+endef
 
-reb: fclean bonus
+# **************************************************************************** #
+#    COLORS
+# **************************************************************************** #
 
-nm:
-	@norminette $(SRCS) $(SRCS_BNS)
+T = \033[0m
+B = \033[1m
+G = \033[32m
+V = \033[35m
+C = \033[36m
+Y = \033[33m
+R = \033[31m
 
-$(OBJSDIR) $(DEPSDIR):
-	@mkdir -p $@/$(BONUSDIR)
+# **************************************************************************** #
+#    UTILS
+# **************************************************************************** #
 
-$(DEPS):
-	include $(wildcard $(DEPS))
+-include $(DEPS)
 
-.PHONY: all libft force bonus debug clean fclean re reb
+$(BUILDDIR):
+	mkdir -p $@
+
+$(foreach build, $(BUILDDIR), $(eval $(call build_cmd, $(build))))
+
+# **************************************************************************** #
+#    PHONY
+# **************************************************************************** #
+
+.PHONY: all libft bonus re reb
+.PHONY: debug leaks run nm mlx
+.PHONY: clean fclean
+
+.SILENT:
