@@ -94,8 +94,9 @@ OBJECTS_BONUS = $(addprefix $(BUILDDIR)/, $(SOURCES_BONUS:.c=.o))
 
 SOURCEDIR += $(addprefix $(BONUSDIR)/, $(SOURCEDIR))
 
-INCS := $(addprefix -I, $(HEADERDIR) $(BONUSDIR)/$(HEADERDIR))
-INCS += $(addprefix -I, $(LIBFTDIR)/$(HEADERDIR))
+HEADERDIR += $(addprefix $(BONUSDIR)/, $(HEADERDIR))
+
+INCS := $(addprefix -I, $(HEADERDIR) $(LIBFTDIR)/$(HEADERDIR))
 INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR)/MLX42)
 
 DEPS := $(OBJECTS:.o=.d) $(OBJECTS_BONUS:.o=.d)
@@ -109,7 +110,7 @@ vpath %.c $(SOURCEDIR)
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
+	$(CC) $(CFLAGS) $(INCS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
 	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
 	printf "$(V)$(B)Binary:$(T)$(Y) $(NAME) $(T)\n"
 
@@ -123,12 +124,16 @@ $(BONUSFLAG): $(OBJECTS_BONUS)
 
 $(OBJECTS) $(OBJECTS_BONUS): $(LIBFTDIR)/$(LIBFTBIN)
 
-# $(OBJECTS) $(OBJECTS_BONUS): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
-
 libft: $(LIBFTDIR)/$(LIBFTBIN)
 
-$(LIBFTDIR)/$(LIBFTBIN): 
+$(LIBFTDIR)/$(LIBFTBIN): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 	@make -C $(LIBFTDIR) all
+
+mlx: $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+
+$(MLXDIR)/$(BUILDDIR)/$(MLXBIN):
+	@cmake $(MLXDIR) -B $(MLXDIR)/$(BUILDDIR) && \
+	make -C $(MLXDIR)/$(BUILDDIR) -j4
 
 run: all
 	$(SCREENCLEAR)
@@ -143,16 +148,20 @@ reb: fclean
 debug: CFLAGS += $(DEBUGFLAGS)
 debug: re
 
-mlx: $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+nm:
+	$(foreach d, $(HEADERDIR), $(foreach h, $(wildcard $(d)/*), \
+		norminette -R CheckDefine $(h);))
+	$(foreach d, $(SOURCEDIR), $(foreach s, $(wildcard $(d)/*), \
+		norminette -R CheckForbiddenSourceHeader $(s);))
 
-$(MLXDIR)/$(BUILDDIR)/$(MLXBIN):
-ifeq ("$(wildcard $(MLXDIR))", "")
-	@echo "$(G)$(B)$(MLXDIR)$(T)$(V) not found, commencing download.$(T)\n"
-	@git clone https://github.com/codam-coding-college/MLX42.git $(MLXDIR)
-else
-	@echo "\n$(V)Skipping download, $(G)$(B)$(MLXDIR)$(T)$(V) exists.$(T)\n"
-endif
-	@cmake $(MLXDIR) -B $(MLXDIR)/build && make -C $(MLXDIR)/build -j4
+leaks: all
+	valgrind $(VLGFLAGS) $(TESTCASE)
+	$(call report_cmd, $(LEAKSLOG))
+
+define report_cmd
+	$(SCREENCLEAR)
+	cat $1 | tail -n +4 | cut --complement -d' ' -f1
+endef
 
 # **************************************************************************** #
 #    BUILD
@@ -180,7 +189,7 @@ clean:
 	@$(RM) $(BONUSFLAG)
 
 fclean: clean
-	$(call delete_cmd, $(NAME) $(BONUSBIN))
+	$(call delete_cmd, $(NAME), $(MLXDIR)/$(BUILDDIR))
 
 define delete_cmd
 	printf "$(R)$(B)Delete:$(T)$(Y)$1$2$3$4$5$(T)\n"
@@ -215,7 +224,7 @@ $(foreach build, $(BUILDDIR), $(eval $(call build_cmd, $(build))))
 # **************************************************************************** #
 
 .PHONY: all libft bonus re reb
-.PHONY: debug leaks run nm mlx
+.PHONY: mlx debug leaks run nm
 .PHONY: clean fclean
 
 .SILENT:
