@@ -152,8 +152,7 @@ ifeq ("$(wildcard $(MLXDIR))", "")
 else
 	@echo "\n$(V)Skipping download, $(G)$(B)$(MLXDIR)$(T)$(V) exists.$(T)\n"
 endif
-	@cmake $(MLXDIR) -B $(MLXDIR)/$(BUILDDIR) && make -C $(MLXDIR)/$(BUILDDIR) -j4
-
+	@cmake $(MLXDIR) -B $(MLXDIR)/build && make -C $(MLXDIR)/build -j4
 
 # **************************************************************************** #
 #    BUILD

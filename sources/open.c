@@ -49,7 +49,7 @@ void	open_map(t_mapinfo *map, t_solong *game)
 		error_occured(ERR_MAP, MSG_NAME, game);
 	read_file(map, game);
 	map->matrix = ft_split(map->read, '\n');
-	map->dublex = ft_split(map->read, '\n');
-	if (!map->matrix || !map->dublex)
+	map->duplex = ft_split(map->read, '\n');
+	if (!map->matrix || !map->duplex)
 		error_occured(ERR_MEM, MSG_MEM, game);
 }

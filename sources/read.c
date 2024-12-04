@@ -76,7 +76,7 @@ void	read_map(t_mapinfo *map, t_solong *game)
 		map->width = ft_strlen(map->matrix[map->height]);
 		if (map->height > 0)
 			prev_len = ft_strlen(map->matrix[map->height - 1]);
-		if (prev_len != -1 && prev_len != (size_t)map->width)
+		if (prev_len != -1 && prev_len != map->width)
 			error_occured(ERR_MAP, MSG_RECT, game);
 		check_walls(game->map, map->height, game);
 		check_elements(game->map, map->height, game);

@@ -2,3 +2,7 @@
 	path = libft
 	url = https://github.com/Jarnomer/libft
 	branch = main
+[submodule "mlx"]
+	path = mlx
+	url = https://github.com/codam-coding-college/MLX42
+	branch = main

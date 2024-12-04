@@ -34,7 +34,7 @@ typedef enum e_element
 	EMPTY = 48,
 	WALL = 49,
 	EXIT = 69
-};	t_element;
+}	t_element;
 
 typedef struct s_asset
 {

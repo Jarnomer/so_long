@@ -25,7 +25,7 @@ static void	check(t_element elem, char *errmsg, t_mapinfo *map, t_solong *game)
 	}
 }
 
-static void	clear_exit(char mark, char **duplex, int x, int y)
+static void	clear_exit(char **duplex, int x, int y)
 {
 	static const char	*cleared_or_exit = "XE";
 	static const char	exit_mark = 'Y';
