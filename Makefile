@@ -97,7 +97,7 @@ SOURCEDIR += $(addprefix $(BONUSDIR)/, $(SOURCEDIR))
 HEADERDIR += $(addprefix $(BONUSDIR)/, $(HEADERDIR))
 
 INCS := $(addprefix -I, $(HEADERDIR) $(LIBFTDIR)/$(HEADERDIR))
-INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR))
+INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR)/MLX42)
 
 DEPS := $(OBJECTS:.o=.d) $(OBJECTS_BONUS:.o=.d)
 
@@ -117,14 +117,14 @@ $(NAME): $(OBJECTS)
 bonus: $(BONUSFLAG)
 
 $(BONUSFLAG): $(OBJECTS_BONUS)
-	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
+	$(CC) $(CFLAGS) $(INCS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
 	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
 	printf "$(V)$(B)Binary:$(T)$(Y) $(BONUSBIN) $(T)\n"
 	@touch $(BONUSFLAG)
 
 $(OBJECTS) $(OBJECTS_BONUS): $(LIBFTDIR)/$(LIBFTBIN)
-# $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
-$(LIBFTDIR)/$(LIBFTBIN):
+
+$(LIBFTDIR)/$(LIBFTBIN): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 	@make -C $(LIBFTDIR) all
 
 $(MLXDIR)/$(BUILDDIR)/$(MLXBIN):

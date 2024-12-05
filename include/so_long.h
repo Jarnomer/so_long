@@ -13,8 +13,9 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include "../mlx/include/MLX42/MLX42.h"
+// # include "../mlx/include/MLX42/MLX42.h"
 
+# include <MLX42.h>
 # include <libft.h>
 # include <textures.h>
 # include <error.h>
@@ -71,7 +72,7 @@ void	read_map(t_mapinfo *map, t_solong *game);
 void	test_map(t_mapinfo *map, t_solong *game);
 void	load_assets(t_solong *game);
 void	draw_assets(t_solong *game);
-void	draw_image(t_image index, int x, int y, t_solong *game);
+void	draw_image(t_image i, int x, int y, t_solong *game);
 void	play_game(t_solong *game);
 void	error_occured(int errcode, char *errmsg, t_solong *game);
 void	self_destruct(t_solong *game);
