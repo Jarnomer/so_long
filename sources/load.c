@@ -28,7 +28,16 @@ static const char *const	g_textures[GAME_ASSETS] = {
 	TEX_PICKUP,
 	TEX_EXIT_OPEN,
 	TEX_EXIT_CLOSE,
-	TEX_PLAYER
+	TEX_ENEMY,
+	TEX_PLAYER,
+	TEX_GLOW_1,
+	TEX_GLOW_2,
+	TEX_GLOW_3,
+	TEX_GLOW_4,
+	TEX_GLOW_5,
+	TEX_GLOW_6,
+	TEX_GLOW_7,
+	TEX_GLOW_8
 };
 
 static void	load_textures(t_solong *game)
@@ -46,11 +55,11 @@ static void	load_textures(t_solong *game)
 		tex = mlx_load_png(g_textures[i]);
 		if (!tex)
 			error_occured(ERR_MLX, MSG_MLX, game);
-		game->img[i] = mlx_texture_to_image(game->mlx, tex);
-		if (!game->img[i])
+		game->asset[i] = mlx_texture_to_image(game->mlx, tex);
+		if (!game->asset[i])
 			error_occured(ERR_MLX, MSG_MLX, game);
 		if (game->cellsize != CELL_SIZE && !mlx_resize_image(
-				game->img[i], game->cellsize, game->cellsize))
+				game->asset[i], game->cellsize, game->cellsize))
 			error_occured(ERR_MLX, MSG_MLX, game);
 		mlx_delete_texture(tex);
 		close(fd);
@@ -60,17 +69,17 @@ static void	load_textures(t_solong *game)
 
 static void	alter_window_settings(t_mapinfo *map, t_solong *game)
 {
-	if (game->height / map->height < game->width / map->width)
-		game->cellsize = game->height / map->height;
+	if (game->screen_height / map->height < game->screen_width / map->width)
+		game->cellsize = game->screen_height / map->height;
 	else
-		game->cellsize = game->width / map->width;
+		game->cellsize = game->screen_width / map->width;
 	mlx_set_window_size(game->mlx,
 		game->cellsize * map->width,
 		game->cellsize * map->height);
 	mlx_set_window_limit(game->mlx,
 		game->cellsize * map->width,
 		game->cellsize * map->height,
-		game->width, game->height);
+		game->screen_width, game->screen_height);
 }
 
 void	load_assets(t_solong *game)
@@ -83,8 +92,8 @@ void	load_assets(t_solong *game)
 	game->mlx = mlx_init(width, height, "so_long", false);
 	if (!game->mlx)
 		error_occured(ERR_MLX, MSG_MLX, game);
-	mlx_get_monitor_size(0, &game->width, &game->height);
-	if (width > game->width || height > game->height)
+	mlx_get_monitor_size(0, &game->screen_width, &game->screen_height);
+	if (width > game->screen_width || height > game->screen_height)
 		alter_window_settings(game->map, game);
 	load_textures(game);
 }

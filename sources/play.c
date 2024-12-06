@@ -12,6 +12,24 @@
 
 #include <so_long.h>
 
+static bool	game_over(t_mapinfo *map, t_solong *game)
+{
+	if (map->matrix[map->play_y][map->play_x] == ENEMY)
+	{
+		ft_printf("%sYou lost the game, the skeletons got you!\n%s",
+			BOLD_RED, RESET);
+		return (true);
+	}
+	else if (map->is_escapable == true
+		&& map->matrix[map->play_y][map->play_x] == EXIT)
+	{
+		ft_printf("%sYou won the game with %d moves!\n%s",
+			BOLD_GREEN, game->moves_count, RESET);
+		return (true);
+	}
+	return (false);
+}
+
 static void	close_window(void *param)
 {
 	t_solong	*game;
@@ -30,7 +48,7 @@ static void	move_player(int dst_y, int dst_x, t_solong *game)
 		return ;
 	draw_image(IMG_FLOOR, game->map->play_x, game->map->play_y, game);
 	draw_image(IMG_PLAYER, dst_x, dst_y, game);
-	ft_printf("Moves: %d\n", ++game->map->moves);
+	print_moves(++game->moves_count, game);
 	game->map->play_x = dst_x;
 	game->map->play_y = dst_y;
 	if (game->map->matrix[dst_y][dst_x] == PICKUP)
@@ -66,9 +84,7 @@ static void	control_keys(mlx_key_data_t keydata, void *param)
 		if (keydata.key == MLX_KEY_D)
 			move_player(map->play_y, map->play_x + 1, game);
 	}
-	if (map->play_y == map->exit_y
-		&& map->play_x == map->exit_x
-		&& map->is_escapable == true)
+	if (game_over(game->map, game))
 		close_window(game);
 }
 
@@ -76,5 +92,7 @@ void	play_game(t_solong *game)
 {
 	mlx_close_hook(game->mlx, &close_window, game);
 	mlx_key_hook(game->mlx, &control_keys, game);
+	mlx_loop_hook(game->mlx, animate_player, game);
+	mlx_loop_hook(game->mlx, move_enemies, game);
 	mlx_loop(game->mlx);
 }

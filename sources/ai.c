@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ai_bonus.c                                         :+:      :+:    :+:   */
+/*   ai.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,57 +10,59 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long_bonus.h"
+#include <so_long.h>
 
-static void	close_window(void *param)
+static void	game_over(void *param)
 {
 	t_solong	*game;
 
 	game = param;
-	mlx_close_window(game->window);
+	ft_printf("%sYou lost the game, the skeletons got you!\n%s",
+		BOLD_RED, RESET);
+	mlx_close_window(game->mlx);
 	self_destruct(game);
 	exit(NOERROR);
 }
 
-static void	draw_empty(int y, int x, t_solong *game)
+static void	draw_floor(int y, int x, t_solong *game)
 {
-	draw_image(TEX_EMPTY, x, y, game);
-	game->map->matrix[y][x] = EMPTY;
+	draw_image(IMG_FLOOR, x, y, game);
+	game->map->matrix[y][x] = FLOOR;
 }
 
-static void	move_enemy(int dst_y, int dst_x, int direct, t_solong *game)
+static void	move_enemy(int dst_y, int dst_x, int direction, t_solong *game)
 {
 	if (dst_y == game->map->play_y && dst_x == game->map->play_x)
-		close_window(game);
-	else if (game->map->matrix[dst_y][dst_x] != EMPTY)
+		game_over(game);
+	else if (game->map->matrix[dst_y][dst_x] != FLOOR)
 		return ;
-	if (direct == 0)
-		draw_empty(dst_y + 1, dst_x, game);
-	else if (direct == 1)
-		draw_empty(dst_y, dst_x + 1, game);
-	else if (direct == 2)
-		draw_empty(dst_y - 1, dst_x, game);
-	else if (direct == 3)
-		draw_empty(dst_y, dst_x - 1, game);
-	draw_image(TEX_ENEMY, dst_x, dst_y, game);
+	if (direction == 0)
+		draw_floor(dst_y + 1, dst_x, game);
+	else if (direction == 1)
+		draw_floor(dst_y, dst_x + 1, game);
+	else if (direction == 2)
+		draw_floor(dst_y - 1, dst_x, game);
+	else if (direction == 3)
+		draw_floor(dst_y, dst_x - 1, game);
+	draw_image(IMG_ENEMY, dst_x, dst_y, game);
 	game->map->matrix[dst_y][dst_x] = ENEMY;
 }
 
 static void	randomize_movement(int y, int x, t_solong *game)
 {
-	int	direct;
+	int	direction;
 
 	if (rand() % 100 != 0)
 		return ;
-	direct = rand() % 4;
-	if (direct == 0)
-		move_enemy(y - 1, x, direct, game);
-	else if (direct == 1)
-		move_enemy(y, x - 1, direct, game);
-	else if (direct == 2)
-		move_enemy(y + 1, x, direct, game);
-	else if (direct == 3)
-		move_enemy(y, x + 1, direct, game);
+	direction = rand() % 4;
+	if (direction == 0)
+		move_enemy(y - 1, x, direction, game);
+	else if (direction == 1)
+		move_enemy(y, x - 1, direction, game);
+	else if (direction == 2)
+		move_enemy(y + 1, x, direction, game);
+	else if (direction == 3)
+		move_enemy(y, x + 1, direction, game);
 }
 
 void	move_enemies(void *param)
@@ -77,8 +79,10 @@ void	move_enemies(void *param)
 		while (++x < game->map->width - 1)
 		{
 			if (game->map->matrix[y][x] == ENEMY)
+			{
 				while (rand() % 4 != 0)
 					randomize_movement(y, x, game);
+			}
 		}
 	}
 }

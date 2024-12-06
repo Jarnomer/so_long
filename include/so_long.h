@@ -13,9 +13,9 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-// # include "../mlx/include/MLX42/MLX42.h"
+# include "../mlx/include/MLX42/MLX42.h"
 
-# include <MLX42.h>
+// # include <MLX42.h>
 # include <libft.h>
 # include <textures.h>
 # include <error.h>
@@ -25,9 +25,12 @@
 # include <string.h>
 # include <errno.h>
 
+# define ENEMY_FREQUENCY	20
+
 typedef enum e_element
 {
 	PLAYER = 80,
+	ENEMY = 88,
 	PICKUP = 67,
 	FLOOR = 48,
 	WALL = 49,
@@ -36,13 +39,13 @@ typedef enum e_element
 
 typedef struct s_mapinfo
 {
-	int		fd;
 	int		width;
 	int		height;
+	int		fd;
+	char	*file;
 	int		pickups;
 	int		players;
 	int		exits;
-	char	*file;
 	char	*buff;
 	char	*read;
 	char	*temp;
@@ -53,17 +56,20 @@ typedef struct s_mapinfo
 	int		exit_y;
 	int		play_x;
 	int		play_y;
-	int		moves;
 }	t_mapinfo;
 
 typedef struct s_solong
 {
-	int			width;
-	int			height;
+	int			screen_width;
+	int			screen_height;
 	int			cellsize;
+	float		uptime;
+	float		timer;
 	t_mapinfo	*map;
 	mlx_t		*mlx;
-	mlx_image_t	*img[GAME_ASSETS];
+	int			moves_count;
+	mlx_image_t	*moves_display;
+	mlx_image_t	*asset[GAME_ASSETS];
 }	t_solong;
 
 void	init_game(t_solong *game, char *file);
@@ -72,9 +78,13 @@ void	read_map(t_mapinfo *map, t_solong *game);
 void	test_map(t_mapinfo *map, t_solong *game);
 void	load_assets(t_solong *game);
 void	draw_assets(t_solong *game);
+void	draw_enemies(t_solong *game);
 void	draw_image(t_image i, int x, int y, t_solong *game);
 void	play_game(t_solong *game);
 void	error_occured(int errcode, char *errmsg, t_solong *game);
 void	self_destruct(t_solong *game);
+void	print_moves(int moves, t_solong *game);
+void	animate_player(void *param);
+void	move_enemies(void *param);
 
 #endif

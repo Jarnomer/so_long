@@ -12,19 +12,6 @@
 
 #include <so_long.h>
 
-static void	clean_assets(t_solong *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < GAME_ASSETS)
-	{
-		if (game->img[i] != NULL)
-			mlx_delete_image(game->mlx, game->img[i]);
-		i++;
-	}
-}
-
 static void	destruct_map(t_mapinfo *map)
 {
 	ft_free_double((void ***)&map->matrix);
@@ -34,6 +21,19 @@ static void	destruct_map(t_mapinfo *map)
 	if (map->fd != -1)
 		close(map->fd);
 	free(map);
+}
+
+static void	clean_assets(t_solong *game)
+{
+	int	i;
+
+	i = 0;
+	while (i < GAME_ASSETS)
+	{
+		if (game->asset[i] != NULL)
+			mlx_delete_image(game->mlx, game->asset[i]);
+		i++;
+	}
 }
 
 void	self_destruct(t_solong *game)

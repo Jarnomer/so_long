@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   anim_bonus.c                                       :+:      :+:    :+:   */
+/*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,14 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long_bonus.h"
+#include <so_long.h>
 
 static void	free_strings(char **cnt, char **res, t_solong *game)
 {
-	free(*cnt);
-	*cnt = NULL;
-	free(*res);
-	*res = NULL;
+	ft_free_single((void **)cnt);
+	ft_free_single((void **)res);
 	if (game != NULL)
 		error_occured(ERR_MEM, MSG_MEM, game);
 }
@@ -27,54 +25,56 @@ void	print_moves(int moves, t_solong *game)
 	char	*cnt;
 	char	*str;
 
-	if (game->counter != NULL)
-		mlx_delete_image(game->window, game->counter);
+	if (game->moves_display != NULL)
+		mlx_delete_image(game->mlx, game->moves_display);
 	cnt = ft_itoa(moves);
 	str = ft_strjoin("Moves: ", cnt);
 	if (!cnt || !str)
 		free_strings(&cnt, &str, game);
-	game->counter = mlx_put_string(game->window, str,
+	ft_printf("Moves: %d\n", moves);
+	game->moves_display = mlx_put_string(game->mlx, str,
 			game->cellsize / 6, game->cellsize / 3);
-	if (!game->counter)
+	if (!game->moves_display)
 		free_strings(&cnt, &str, game);
 	free_strings(&cnt, &str, NULL);
 }
 
-static int	update_animation(t_solong *game)
+static bool	draw_next_frame(t_solong *game)
 {
-	static float	mod = ANIMATE_TIMER;
+	static double	accumulator = 0.0;
+	static const double	frame_interval = 0.15;
 
-	game->uptime = mlx_get_time();
-	if (game->uptime >= game->timer)
+	accumulator += game->mlx->delta_time;
+	if (accumulator >= frame_interval)
 	{
-		game->timer += mod;
-		return (0);
+		accumulator -= frame_interval;
+		return (true);
 	}
-	return (1);
+	return (false);
 }
 
-void	animate_eyes(void *param)
+void	animate_player(void *param)
 {
-	static bool	increase = true;
-	static int	i = 0;
+	static bool	increment = true;
+	static int	frame = 0;
 	t_solong	*game;
 
 	game = param;
-	if (update_animation(game) == 0 && !game->gameover)
+	if (draw_next_frame(game))
 	{
-		if (increase == true)
+		if (increment == true)
 		{
-			draw_image(game->images[++i + 15],
+			draw_image(++frame + IMG_PLAYER,
 				game->map->play_x, game->map->play_y, game);
-			if (i + 15 == GAME_ASSETS - 1)
-				increase = false;
+			if (frame + IMG_PLAYER == GAME_ASSETS - 1)
+				increment = false;
 		}
 		else
 		{
-			draw_image(game->images[i-- + 15],
+			draw_image(frame-- + IMG_PLAYER,
 				game->map->play_x, game->map->play_y, game);
-			if (i == 0)
-				increase = true;
+			if (!frame)
+				increment = true;
 		}
 	}
 }

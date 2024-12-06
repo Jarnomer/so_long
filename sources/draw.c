@@ -14,15 +14,15 @@
 
 static void	randomize_wall(int x, int y, t_solong *game)
 {
-	static int	i = 0;
+	int	i;
 
+	i = rand() % 3;
 	if (i % 3 == 0)
 		draw_image(IMG_WALL_1, x, y, game);
 	else if (i % 3 == 1)
 		draw_image(IMG_WALL_2, x, y, game);
 	else
 		draw_image(IMG_WALL_3, x, y, game);
-	i++;
 }
 
 static void	draw_map(t_solong *game)
@@ -74,7 +74,9 @@ static void	draw_frame(t_solong *game)
 
 void	draw_image(t_image i, int x, int y, t_solong *game)
 {
-	if (mlx_image_to_window(game->mlx, game->img[i], x, y) == -1)
+	x *= game->cellsize;
+	y *= game->cellsize;
+	if (mlx_image_to_window(game->mlx, game->asset[i], x, y) == -1)
 		error_occured(ERR_MLX, MSG_MLX, game);
 }
 
@@ -82,4 +84,5 @@ void	draw_assets(t_solong *game)
 {
 	draw_frame(game);
 	draw_map(game);
+	draw_enemies(game);
 }

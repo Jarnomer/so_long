@@ -30,8 +30,8 @@ static void	check_elements(t_mapinfo *map, int row, t_solong *game)
 {
 	int	i;
 
-	i = 0;
-	while (map->matrix[row][i])
+	i = -1;
+	while (map->matrix[row][++i])
 	{
 		if (map->matrix[row][i] == FLOOR
 			|| map->matrix[row][i] == WALL)
@@ -44,7 +44,6 @@ static void	check_elements(t_mapinfo *map, int row, t_solong *game)
 			update_exit_info(i, row, map);
 		else
 			error_occured(ERR_MAP, MSG_ELEM, game);
-		i++;
 	}
 }
 

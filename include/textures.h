@@ -13,25 +13,34 @@
 #ifndef TEXTURES_H
 # define TEXTURES_H
 
-# define GAME_ASSETS	16
+# define GAME_ASSETS	25
 # define CELL_SIZE		126
 
-# define TEX_CORNER_UL		"../textures/mandatory/corner_up_left.png"
-# define TEX_CORNER_UR		"../textures/mandatory/corner_up_right.png"
-# define TEX_CORNER_DL		"../textures/mandatory/corner_down_left.png"
-# define TEX_CORNER_DR		"../textures/mandatory/corner_down_right.png"
-# define TEX_EDGE_UP		"../textures/mandatory/edge_up.png"
-# define TEX_EDGE_DOWN		"../textures/mandatory/edge_down.png"
-# define TEX_EDGE_LEFT		"../textures/mandatory/edge_left.png"
-# define TEX_EDGE_RIGHT		"../textures/mandatory/edge_right.png"
-# define TEX_FLOOR			"../textures/mandatory/floor.png"
-# define TEX_WALL_1			"../textures/mandatory/wall1.png"
-# define TEX_WALL_2			"../textures/mandatory/wall2.png"
-# define TEX_WALL_3			"../textures/mandatory/wall3.png"
-# define TEX_PICKUP			"../textures/mandatory/pickup.png"
-# define TEX_EXIT_OPEN		"../textures/mandatory/exit_open.png"
-# define TEX_EXIT_CLOSE		"../textures/mandatory/exit_closed.png"
-# define TEX_PLAYER			"../textures/mandatory/player.png"
+# define TEX_CORNER_UL		"./textures/corner_up_left.png"
+# define TEX_CORNER_UR		"./textures/corner_up_right.png"
+# define TEX_CORNER_DL		"./textures/corner_down_left.png"
+# define TEX_CORNER_DR		"./textures/corner_down_right.png"
+# define TEX_EDGE_UP		"./textures/edge_up.png"
+# define TEX_EDGE_DOWN		"./textures/edge_down.png"
+# define TEX_EDGE_LEFT		"./textures/edge_left.png"
+# define TEX_EDGE_RIGHT		"./textures/edge_right.png"
+# define TEX_FLOOR			"./textures/empty.png"
+# define TEX_WALL_1			"./textures/wall1.png"
+# define TEX_WALL_2			"./textures/wall2.png"
+# define TEX_WALL_3			"./textures/wall3.png"
+# define TEX_PICKUP			"./textures/pickup.png"
+# define TEX_EXIT_OPEN		"./textures/exit_open.png"
+# define TEX_EXIT_CLOSE		"./textures/exit_closed.png"
+# define TEX_ENEMY			"./textures/enemy.png"
+# define TEX_PLAYER			"./textures/player.png"
+# define TEX_GLOW_1			"./textures/glow1.png"
+# define TEX_GLOW_2			"./textures/glow2.png"
+# define TEX_GLOW_3			"./textures/glow3.png"
+# define TEX_GLOW_4			"./textures/glow4.png"
+# define TEX_GLOW_5			"./textures/glow5.png"
+# define TEX_GLOW_6			"./textures/glow6.png"
+# define TEX_GLOW_7			"./textures/glow7.png"
+# define TEX_GLOW_8			"./textures/glow8.png"
 
 typedef enum e_image
 {
@@ -50,7 +59,16 @@ typedef enum e_image
 	IMG_PICKUP,
 	IMG_EXIT_OPEN,
 	IMG_EXIT_CLOSE,
-	IMG_PLAYER
+	IMG_ENEMY,
+	IMG_PLAYER,
+	IMG_GLOW_1,
+	IMG_GLOW_2,
+	IMG_GLOW_3,
+	IMG_GLOW_4,
+	IMG_GLOW_5,
+	IMG_GLOW_6,
+	IMG_GLOW_7,
+	IMG_GLOW_8
 }	t_image;
 
 #endif

@@ -30,7 +30,7 @@ LIBFTBIN  := libft.a
 MLXDIR    := ./mlx
 MLXBIN    := libmlx42.a
 
-TESTCASE  := ./$(NAME) maps/valid1.ber
+TESTCASE  := ./$(NAME) maps/valid2.ber
 
 # **************************************************************************** #
 #    COMMANDS
@@ -44,7 +44,7 @@ SCREENCLEAR := printf "\033c"
 # **************************************************************************** #
 
 CC         := cc
-CFLAGS     := -Wall -Werror -Wextra
+CFLAGS     := -Wall -Werror -Wextra -Ofast
 CPPFLAGS   := -c -MMD -MP
 DEBUGFLAGS := -g -fsanitize=address
 MAKEFLAGS  += --no-print-directory -j4
@@ -77,29 +77,19 @@ SOURCES := main \
            draw \
            play \
            free \
-           error
-
-SOURCES_BONUS := $(SOURCES) \
-                 anim \
-                 enemy \
-                 ai
+           error \
+		   player \
+		   enemy \
+		   ai
 
 SOURCES := $(addsuffix .c, $(SOURCES))
 
-SOURCES_BONUS := $(addsuffix _bonus.c, $(SOURCES_BONUS))
-
 OBJECTS := $(addprefix $(BUILDDIR)/, $(SOURCES:.c=.o))
-
-OBJECTS_BONUS = $(addprefix $(BUILDDIR)/, $(SOURCES_BONUS:.c=.o))
-
-SOURCEDIR += $(addprefix $(BONUSDIR)/, $(SOURCEDIR))
-
-HEADERDIR += $(addprefix $(BONUSDIR)/, $(HEADERDIR))
 
 INCS := $(addprefix -I, $(HEADERDIR) $(LIBFTDIR)/$(HEADERDIR))
 INCS += $(addprefix -I, $(MLXDIR)/$(HEADERDIR)/MLX42)
 
-DEPS := $(OBJECTS:.o=.d) $(OBJECTS_BONUS:.o=.d)
+DEPS := $(OBJECTS:.o=.d)
 
 vpath %.c $(SOURCEDIR)
 
@@ -114,17 +104,9 @@ $(NAME): $(OBJECTS)
 	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
 	printf "$(V)$(B)Binary:$(T)$(Y) $(NAME) $(T)\n"
 
-bonus: $(BONUSFLAG)
+$(OBJECTS): $(LIBFTDIR)/$(LIBFTBIN)
 
-$(BONUSFLAG): $(OBJECTS_BONUS)
-	$(CC) $(CFLAGS) $(INCS) $^ $(LIBFTDIR)/$(LIBFTBIN) \
-	$(MLXFLAGS) $(MLXDIR)/$(BUILDDIR)/$(MLXBIN) -o $(NAME)
-	printf "$(V)$(B)Binary:$(T)$(Y) $(BONUSBIN) $(T)\n"
-	@touch $(BONUSFLAG)
-
-$(OBJECTS) $(OBJECTS_BONUS): $(LIBFTDIR)/$(LIBFTBIN)
-
-$(LIBFTDIR)/$(LIBFTBIN): $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
+$(LIBFTDIR)/$(LIBFTBIN): # $(MLXDIR)/$(BUILDDIR)/$(MLXBIN)
 	@make -C $(LIBFTDIR) all
 
 $(MLXDIR)/$(BUILDDIR)/$(MLXBIN):
@@ -186,7 +168,6 @@ endef
 clean:
 	@make -C $(LIBFTDIR) fclean
 	$(call delete_cmd, $(BUILDDIR), $(BUILDLOG), $(LEAKSLOG))
-	@$(RM) $(BONUSFLAG)
 
 fclean: clean
 	$(call delete_cmd, $(NAME), $(MLXDIR)/$(BUILDDIR))
