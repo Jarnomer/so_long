@@ -63,8 +63,6 @@ typedef struct s_solong
 	int			screen_width;
 	int			screen_height;
 	int			cellsize;
-	float		uptime;
-	float		timer;
 	t_mapinfo	*map;
 	mlx_t		*mlx;
 	int			moves_count;
