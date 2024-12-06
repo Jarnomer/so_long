@@ -33,6 +33,12 @@
 
 Goal of the project is to create simple 2D video game.
 
+It uses `map` files with predefined limitations to genarate the game world.
+
+World is build in `128x128` cells and textures are `compressed` if map dimensions exceed screen size.
+
+Features [mlx42](https://github.com/codam-coding-college/MLX42) to draw graphics and register keystrokes.
+
 ## 🛠️ Build
 
 GNU `make` and `gcc` are required to build and compile the project.
@@ -57,6 +63,8 @@ You can run the game by giving it a map file. Invalid argument or map results in
 ./so_solong maps/<map_name>.ber
 ```
 
+You can `move` around with `WASD` keys and `ESC` will close the game.
+
 Goal is to `collect` all gems and then `escape` through exit with least amount of moves.
 
 Be careful! If you take your time the `enemies` start to `multiple`.
@@ -75,8 +83,8 @@ Be careful! If you take your time the `enemies` start to `multiple`.
 
 ## 4️⃣2️⃣ Footer
 
-For my other 42 project and general information, please refer the [landing page](https://github.com/Jarnomer/Hive42).
+For my other 42 projects and general information, please refer the [Hive42](https://github.com/Jarnomer/Hive42) page.
 
-I have also created error handling [unit testers](https://github.com/Jarnomer/Hive42) for `pipex`, `so_long` and `cub3d`.
+I have also created error handling [unit testers](https://github.com/Jarnomer/42Testers) for `pipex`, `so_long` and `cub3D`.
 
 ### Cheers and good luck! 🥳
