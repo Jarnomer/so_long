@@ -14,7 +14,7 @@
 
 static void	log_error(char *msg1, char *msg2, char *msg3)
 {
-	ft_putstr_fd(RED, STDERR_FILENO);
+	ft_putstr_fd(BOLD_RED, STDERR_FILENO);
 	ft_putendl_fd("Error", STDERR_FILENO);
 	ft_putstr_fd(msg1, STDERR_FILENO);
 	ft_putstr_fd(msg2, STDERR_FILENO);

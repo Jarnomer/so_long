@@ -31,7 +31,8 @@
 # define MSG_MLX		"MLX42 error"
 
 # define YELLOW			"\033[0;33m"
-# define RED			"\033[0;31m"
+# define BOLD_RED		"\033[1;31m"
+# define BOLD_GREEN		"\033[1;32m"
 # define RESET			"\033[0m"
 
 enum e_exitcodes
