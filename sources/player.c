@@ -17,7 +17,7 @@ static void	free_strings(char **cnt, char **res, t_solong *game)
 	ft_free_single((void **)cnt);
 	ft_free_single((void **)res);
 	if (game != NULL)
-		error_occured(ERR_MEM, MSG_MEM, game);
+		error_exit(ERR_MEM, MSG_MEM, game);
 }
 
 void	print_moves(int moves, t_solong *game)

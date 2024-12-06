@@ -20,7 +20,7 @@ static void	verify(int c, char *errmsg, t_mapinfo *map, t_solong *game)
 	while (i < map->height)
 	{
 		if (ft_strchr(map->duplex[i], c))
-			error_occured(ERR_MAP, errmsg, game);
+			error_exit(ERR_MAP, errmsg, game);
 		i++;
 	}
 }

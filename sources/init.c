@@ -27,6 +27,6 @@ void	init_game(t_solong *game, char *file)
 	ft_bzero(game, sizeof(*game));
 	game->map = ft_calloc(1, sizeof(t_mapinfo));
 	if (!game->map || init_mapinfo(game->map, file) == -1)
-		error_occured(ERR_MEM, MSG_MEM, game);
+		error_exit(ERR_MEM, MSG_MEM, game);
 	game->cellsize = CELL_SIZE;
 }

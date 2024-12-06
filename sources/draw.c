@@ -77,7 +77,7 @@ void	draw_image(t_image i, int x, int y, t_solong *game)
 	x *= game->cellsize;
 	y *= game->cellsize;
 	if (mlx_image_to_window(game->mlx, game->asset[i], x, y) == -1)
-		error_occured(ERR_MLX, MSG_MLX, game);
+		error_exit(ERR_MLX, MSG_MLX, game);
 }
 
 void	draw_assets(t_solong *game)

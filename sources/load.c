@@ -40,6 +40,13 @@ static const char *const	g_textures[GAME_ASSETS] = {
 	TEX_GLOW_8
 };
 
+static void	error_occured(int fd, mlx_texture_t *tex, t_solong *game)
+{
+	close(fd);
+	mlx_delete_texture(tex);
+	error_exit(ERR_MLX, MSG_MLX, game);
+}
+
 static void	load_textures(t_solong *game)
 {
 	mlx_texture_t	*tex;
@@ -51,16 +58,16 @@ static void	load_textures(t_solong *game)
 	{
 		fd = open(g_textures[i], O_RDONLY);
 		if (fd == -1)
-			error_occured(ERR_TEX, (char *)g_textures[i], game);
+			error_exit(ERR_TEX, (char *)g_textures[i], game);
 		tex = mlx_load_png(g_textures[i]);
 		if (!tex)
-			error_occured(ERR_MLX, MSG_MLX, game);
+			error_exit(ERR_MLX, MSG_MLX, game);
 		game->asset[i] = mlx_texture_to_image(game->mlx, tex);
 		if (!game->asset[i])
-			error_occured(ERR_MLX, MSG_MLX, game);
+			error_occured(fd, tex, game);
 		if (game->cellsize != CELL_SIZE && !mlx_resize_image(
 				game->asset[i], game->cellsize, game->cellsize))
-			error_occured(ERR_MLX, MSG_MLX, game);
+			error_occured(fd, tex, game);
 		mlx_delete_texture(tex);
 		close(fd);
 		i++;
@@ -91,7 +98,7 @@ void	load_assets(t_solong *game)
 	height = CELL_SIZE * game->map->height;
 	game->mlx = mlx_init(width, height, "so_long", false);
 	if (!game->mlx)
-		error_occured(ERR_MLX, MSG_MLX, game);
+		error_exit(ERR_MLX, MSG_MLX, game);
 	mlx_get_monitor_size(0, &game->screen_width, &game->screen_height);
 	if (width > game->screen_width || height > game->screen_height)
 		alter_window_settings(game->map, game);

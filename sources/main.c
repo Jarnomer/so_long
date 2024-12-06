@@ -17,7 +17,7 @@ int	main(int argc, char **argv)
 	t_solong	game;
 
 	if (argc != 2)
-		error_occured(ERR_ARGC, MSG_ARGC, NULL);
+		error_exit(ERR_ARGC, MSG_ARGC, NULL);
 	init_game(&game, argv[1]);
 	open_map(game.map, &game);
 	read_map(game.map, &game);

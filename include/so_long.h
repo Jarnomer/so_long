@@ -13,9 +13,7 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include "../mlx/include/MLX42/MLX42.h"
-
-// # include <MLX42.h>
+# include <MLX42.h>
 # include <libft.h>
 # include <textures.h>
 # include <error.h>
@@ -79,7 +77,7 @@ void	draw_assets(t_solong *game);
 void	draw_enemies(t_solong *game);
 void	draw_image(t_image i, int x, int y, t_solong *game);
 void	play_game(t_solong *game);
-void	error_occured(int errcode, char *errmsg, t_solong *game);
+void	error_exit(int errcode, char *errmsg, t_solong *game);
 void	self_destruct(t_solong *game);
 void	print_moves(int moves, t_solong *game);
 void	animate_player(void *param);

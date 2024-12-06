@@ -24,7 +24,7 @@ static void	log_error(char *msg1, char *msg2, char *msg3)
 	ft_putstr_fd(RESET, STDERR_FILENO);
 }
 
-void	error_occured(int errcode, char *errmsg, t_solong *game)
+void	error_exit(int errcode, char *errmsg, t_solong *game)
 {
 	if (errmsg != NULL)
 	{
