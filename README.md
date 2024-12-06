@@ -51,13 +51,11 @@ cd so_long && make all
 
 ## ⚡ Usage
 
-After build you can run the game by giving it a map file.
+You can run the game by giving it a map file. Invalid argument or map results into `error`.
 
 ```bash
 ./so_solong maps/<map_name>.ber
 ```
-
-Invalid argument or map file results into `error`.
 
 Goal is to `collect` all gems and then `escape` through exit with least amount of moves.
 
