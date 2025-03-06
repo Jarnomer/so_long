@@ -45,7 +45,7 @@ void	open_map(t_mapinfo *map, t_solong *game)
 	map->temp = ft_strrchr(map->file, '.');
 	if (!map->temp || ft_strcmp(map->temp, ".ber"))
 		error_exit(ERR_MAP, MSG_EXTN, game);
-	else if (!ft_strcmp(map->temp, ".ber"))
+	else if (map->temp == map->file)
 		error_exit(ERR_MAP, MSG_NAME, game);
 	read_file(map, game);
 	map->matrix = ft_split(map->read, '\n');

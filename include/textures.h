@@ -16,6 +16,10 @@
 # define GAME_ASSETS	25
 # define CELL_SIZE		126
 
+# define PLAYER_FRAME_INTERVAL  0.075
+# define GLOW_FRAME_INTERVAL    0.05
+# define MAX_FRAMES             8
+
 # define TEX_CORNER_UL		"./textures/corner_up_left.png"
 # define TEX_CORNER_UR		"./textures/corner_up_right.png"
 # define TEX_CORNER_DL		"./textures/corner_down_left.png"
@@ -41,6 +45,17 @@
 # define TEX_GLOW_6			"./textures/glow6.png"
 # define TEX_GLOW_7			"./textures/glow7.png"
 # define TEX_GLOW_8			"./textures/glow8.png"
+
+typedef struct s_animation
+{
+	double	player_time;
+	int		player_frame;
+	int		direction;
+	double	exit_time;
+	int		exit_frame;
+	bool	exit_active;
+	double	effect_duration;
+}	t_animation;
 
 typedef enum e_image
 {

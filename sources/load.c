@@ -42,8 +42,10 @@ static const char *const	g_textures[GAME_ASSETS] = {
 
 static void	error_occured(int fd, mlx_texture_t *tex, t_solong *game)
 {
-	close(fd);
-	mlx_delete_texture(tex);
+	if (fd != -1)
+		close(fd);
+	if (tex != NULL)
+		mlx_delete_texture(tex);
 	error_exit(ERR_MLX, MSG_MLX, game);
 }
 
@@ -61,7 +63,7 @@ static void	load_textures(t_solong *game)
 			error_exit(ERR_TEX, (char *)g_textures[i], game);
 		tex = mlx_load_png(g_textures[i]);
 		if (!tex)
-			error_exit(ERR_MLX, MSG_MLX, game);
+			error_occured(fd, tex, game);
 		game->asset[i] = mlx_texture_to_image(game->mlx, tex);
 		if (!game->asset[i])
 			error_occured(fd, tex, game);

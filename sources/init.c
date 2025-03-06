@@ -29,4 +29,6 @@ void	init_game(t_solong *game, char *file)
 	if (!game->map || init_mapinfo(game->map, file) == -1)
 		error_exit(ERR_MEM, MSG_MEM, game);
 	game->cellsize = CELL_SIZE;
+	ft_bzero(&game->anim, sizeof(t_animation));
+	game->anim.direction = 1;
 }

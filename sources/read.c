@@ -67,15 +67,15 @@ static void	check_walls(t_mapinfo *map, int row, t_solong *game)
 
 void	read_map(t_mapinfo *map, t_solong *game)
 {
-	int	prev_len;
+	int	prev_width;
 
-	prev_len = -1;
+	prev_width = -1;
 	while (map->matrix[map->height])
 	{
 		map->width = ft_strlen(map->matrix[map->height]);
 		if (map->height > 0)
-			prev_len = ft_strlen(map->matrix[map->height - 1]);
-		if (prev_len != -1 && prev_len != map->width)
+			prev_width = ft_strlen(map->matrix[map->height - 1]);
+		if (prev_width != -1 && prev_width != map->width)
 			error_exit(ERR_MAP, MSG_RECT, game);
 		check_walls(game->map, map->height, game);
 		check_elements(game->map, map->height, game);

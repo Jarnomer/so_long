@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   anim.c                                             :+:      :+:    :+:   */
+/*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/11 21:19:15 by jmertane          #+#    #+#             */
-/*   Updated: 2024/02/15 19:46:55 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:30:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,42 +39,25 @@ void	print_moves(int moves, t_solong *game)
 	free_strings(&cnt, &str, NULL);
 }
 
-static bool	draw_next_frame(t_solong *game)
-{
-	static double	accumulator = 0.0;
-	static const double	frame_interval = 0.15;
-
-	accumulator += game->mlx->delta_time;
-	if (accumulator >= frame_interval)
-	{
-		accumulator -= frame_interval;
-		return (true);
-	}
-	return (false);
-}
-
 void	animate_player(void *param)
 {
-	static bool	increment = true;
-	static int	frame = 0;
 	t_solong	*game;
+	t_animation	*anim;
 
 	game = param;
-	if (draw_next_frame(game))
+	anim = &game->anim;
+	anim->player_time += game->mlx->delta_time;
+	if (anim->player_time >= PLAYER_FRAME_INTERVAL)
 	{
-		if (increment == true)
+		anim->player_time -= PLAYER_FRAME_INTERVAL;
+		anim->player_frame += anim->direction;
+		if (anim->player_frame >= MAX_FRAMES - 1
+			|| anim->player_frame <= 0)
 		{
-			draw_image(++frame + IMG_PLAYER,
-				game->map->play_x, game->map->play_y, game);
-			if (frame + IMG_PLAYER == GAME_ASSETS - 1)
-				increment = false;
-		}
-		else
-		{
-			draw_image(frame-- + IMG_PLAYER,
-				game->map->play_x, game->map->play_y, game);
-			if (!frame)
-				increment = true;
+			anim->direction *= -1;
+			anim->player_frame += anim->direction;
 		}
 	}
+	draw_image(IMG_PLAYER + anim->player_frame,
+		game->map->play_x, game->map->play_y, game);
 }

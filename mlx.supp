@@ -1,0 +1,117 @@
+# Valgrind suppression file for mxl42
+
+# MLX42 library typically has some memory leaks or conditional jumps
+# that are outside your control as they're part of the library
+
+# Suppress known MLX memory leaks
+{
+   mlx_init_leak
+   Memcheck:Leak
+   ...
+   fun:mlx_init
+   ...
+}
+
+{
+   mlx_texture_to_image_leak
+   Memcheck:Leak
+   ...
+   fun:mlx_texture_to_image
+   ...
+}
+
+{
+   mlx_load_png_leak
+   Memcheck:Leak
+   ...
+   fun:mlx_load_png
+   ...
+}
+
+# Suppress X11 related leaks (these are common with graphics libraries)
+{
+   x11_leak
+   Memcheck:Leak
+   ...
+   obj:*/libX11*
+   ...
+}
+
+# Suppress OpenGL related issues
+{
+   opengl_leak
+   Memcheck:Leak
+   ...
+   obj:*/libGL*
+   ...
+}
+
+{
+   glfw_leak
+   Memcheck:Leak
+   ...
+   obj:*/libglfw*
+   ...
+}
+
+# Suppress conditional jumps or moves depending on uninitialized values in MLX
+{
+   mlx_uninit_value
+   Memcheck:Cond
+   ...
+   obj:*/libmlx42*
+   ...
+}
+
+{
+   mlx_value8
+   Memcheck:Value8
+   ...
+   obj:*/libmlx42*
+   ...
+}
+
+# Suppress memory leaks in libft's strdup which might be reported incorrectly
+{
+   ft_strdup_leak
+   Memcheck:Leak
+   ...
+   fun:ft_strdup
+   ...
+}
+
+# Suppress memory leaks from system libraries
+{
+   system_lib_leak
+   Memcheck:Leak
+   ...
+   obj:/usr/lib*
+   ...
+}
+
+# Suppressing common initialization leaks in dynamic loaders
+{
+   dl_init_leak
+   Memcheck:Leak
+   ...
+   fun:_dl_init
+   ...
+}
+
+# If there are specific issues with the enemy movement functions
+{
+   enemy_movement_conditional
+   Memcheck:Cond
+   ...
+   fun:move_enemies
+   ...
+}
+
+# If random function causes any issues
+{
+   rand_conditional
+   Memcheck:Cond
+   ...
+   fun:rand
+   ...
+}

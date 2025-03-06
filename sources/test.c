@@ -12,7 +12,7 @@
 
 #include <so_long.h>
 
-static void	verify(int c, char *errmsg, t_mapinfo *map, t_solong *game)
+static void	verify_map(int c, char *errmsg, t_mapinfo *map, t_solong *game)
 {
 	int	i;
 
@@ -62,7 +62,7 @@ static void	clear_pickups(char **duplex, int x, int y)
 void	test_map(t_mapinfo *map, t_solong *game)
 {
 	clear_pickups(map->duplex, map->play_x, map->play_y);
-	verify(PICKUP, MSG_PICKUP, map, game);
+	verify_map(PICKUP, MSG_PICKUP, map, game);
 	clear_exit(map->duplex, map->play_x, map->play_y);
-	verify(EXIT, MSG_EXIT, map, game);
+	verify_map(EXIT, MSG_EXIT, map, game);
 }

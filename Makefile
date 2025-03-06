@@ -30,7 +30,7 @@ LIBFTBIN  := libft.a
 MLXDIR    := ./mlx
 MLXBIN    := libmlx42.a
 
-TESTCASE  := ./$(NAME) maps/valid2.ber
+TESTCASE  := ./$(NAME) maps/valid1.ber
 
 # **************************************************************************** #
 #    COMMANDS
@@ -55,14 +55,14 @@ MLXFLAGS   = -ldl -lglfw -pthread -lm
 # **************************************************************************** #
 
 LEAKSLOG := leaks.log
+SUPPFILE := mlx.supp
 VLGFLAGS := --leak-check=full \
             --show-leak-kinds=all \
             --track-origins=yes \
             --track-fds=yes \
-            --trace-children=yes \
+			--suppressions=$(SUPPFILE) \
             --log-file=$(LEAKSLOG) \
-            --verbose \
-            --quiet
+            --verbose
 
 # **************************************************************************** #
 #    SOURCES

@@ -1,6 +1,7 @@
 so_long
 .bonus
 *build
+*mlx
 *.vscode
 *.log
 *.pdf

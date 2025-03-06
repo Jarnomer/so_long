@@ -66,6 +66,7 @@ typedef struct s_solong
 	int			moves_count;
 	mlx_image_t	*moves_display;
 	mlx_image_t	*asset[GAME_ASSETS];
+	t_animation	anim;
 }	t_solong;
 
 void	init_game(t_solong *game, char *file);
