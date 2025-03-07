@@ -21,8 +21,8 @@ static void	update_exit_info(int col, int row, t_mapinfo *map)
 
 static void	update_player_info(int col, int row, t_mapinfo *map)
 {
-	map->play_x = col;
-	map->play_y = row;
+	map->player_x = col;
+	map->player_y = row;
 	map->players++;
 }
 

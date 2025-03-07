@@ -23,7 +23,8 @@
 # include <string.h>
 # include <errno.h>
 
-# define ENEMY_FREQUENCY	20
+// One enemy per X floor tiles
+# define ENEMY_FREQUENCY 20
 
 typedef enum e_element
 {
@@ -60,8 +61,8 @@ typedef struct s_mapinfo
 	bool	is_escapable;
 	int		exit_x;
 	int		exit_y;
-	int		play_x;
-	int		play_y;
+	int		player_x;
+	int		player_y;
 }	t_mapinfo;
 
 typedef struct s_solong

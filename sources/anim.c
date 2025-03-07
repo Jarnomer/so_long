@@ -59,5 +59,5 @@ void	animate_player(void *param)
 		}
 	}
 	draw_image(IMG_PLAYER + anim->player_frame,
-		game->map->play_x, game->map->play_y, game);
+		game->map->player_x, game->map->player_y, game);
 }
