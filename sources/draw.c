@@ -36,15 +36,15 @@ static void	draw_map(t_solong *game)
 		x = 0;
 		while (++x < game->map->width - 1)
 		{
-			if (game->map->matrix[y][x] == WALL)
+			if (game->map->matrix[y][x] == MAP_WALL)
 				randomize_wall(x, y, game);
-			else if (game->map->matrix[y][x] == FLOOR)
+			else if (game->map->matrix[y][x] == MAP_FLOOR)
 				draw_image(IMG_FLOOR, x, y, game);
-			else if (game->map->matrix[y][x] == PICKUP)
+			else if (game->map->matrix[y][x] == MAP_PICKUP)
 				draw_image(IMG_PICKUP, x, y, game);
-			else if (game->map->matrix[y][x] == EXIT)
+			else if (game->map->matrix[y][x] == MAP_EXIT)
 				draw_image(IMG_EXIT_CLOSE, x, y, game);
-			else if (game->map->matrix[y][x] == PLAYER)
+			else if (game->map->matrix[y][x] == MAP_PLAYER)
 				draw_image(IMG_PLAYER, x, y, game);
 		}
 	}

@@ -33,14 +33,14 @@ static void	check_elements(t_mapinfo *map, int row, t_solong *game)
 	i = -1;
 	while (map->matrix[row][++i])
 	{
-		if (map->matrix[row][i] == FLOOR
-			|| map->matrix[row][i] == WALL)
+		if (map->matrix[row][i] == MAP_FLOOR
+			|| map->matrix[row][i] == MAP_WALL)
 			continue ;
-		else if (map->matrix[row][i] == PICKUP)
+		else if (map->matrix[row][i] == MAP_PICKUP)
 			map->pickups++;
-		else if (map->matrix[row][i] == PLAYER)
+		else if (map->matrix[row][i] == MAP_PLAYER)
 			update_player_info(i, row, map);
-		else if (map->matrix[row][i] == EXIT)
+		else if (map->matrix[row][i] == MAP_EXIT)
 			update_exit_info(i, row, map);
 		else
 			error_exit(ERR_MAP, MSG_ELEM, game);
@@ -52,14 +52,14 @@ static void	check_walls(t_mapinfo *map, int row, t_solong *game)
 	int	i;
 
 	i = 0;
-	if (map->matrix[row][0] != WALL
-		|| map->matrix[row][map->width - 1] != WALL)
+	if (map->matrix[row][0] != MAP_WALL
+		|| map->matrix[row][map->width - 1] != MAP_WALL)
 		error_exit(ERR_MAP, MSG_WALL, game);
 	else if (!row || !map->matrix[row + 1])
 	{
 		while (map->matrix[row][i])
 		{
-			if (map->matrix[row][i++] != WALL)
+			if (map->matrix[row][i++] != MAP_WALL)
 				error_exit(ERR_MAP, MSG_WALL, game);
 		}
 	}

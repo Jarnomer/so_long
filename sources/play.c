@@ -14,14 +14,14 @@
 
 static bool	game_over(t_mapinfo *map, t_solong *game)
 {
-	if (map->matrix[map->play_y][map->play_x] == ENEMY)
+	if (map->matrix[map->play_y][map->play_x] == MAP_ENEMY)
 	{
 		ft_printf("%sYou lost the game, the skeletons got you!\n%s",
 			BOLD_RED, RESET);
 		return (true);
 	}
 	else if (map->is_escapable == true
-		&& map->matrix[map->play_y][map->play_x] == EXIT)
+		&& map->matrix[map->play_y][map->play_x] == MAP_EXIT)
 	{
 		ft_printf("%sYou won the game with %d moves!\n%s",
 			BOLD_GREEN, game->moves_count, RESET);
@@ -42,8 +42,8 @@ static void	close_window(void *param)
 
 static void	move_player(int dst_y, int dst_x, t_solong *game)
 {
-	if (game->map->matrix[dst_y][dst_x] == WALL
-		|| (game->map->matrix[dst_y][dst_x] == EXIT
+	if (game->map->matrix[dst_y][dst_x] == MAP_WALL
+		|| (game->map->matrix[dst_y][dst_x] == MAP_EXIT
 		&& game->map->is_escapable == false))
 		return ;
 	draw_image(IMG_FLOOR, game->map->play_x, game->map->play_y, game);
@@ -51,9 +51,9 @@ static void	move_player(int dst_y, int dst_x, t_solong *game)
 	print_moves(++game->moves_count, game);
 	game->map->play_x = dst_x;
 	game->map->play_y = dst_y;
-	if (game->map->matrix[dst_y][dst_x] == PICKUP)
+	if (game->map->matrix[dst_y][dst_x] == MAP_PICKUP)
 	{
-		game->map->matrix[dst_y][dst_x] = FLOOR;
+		game->map->matrix[dst_y][dst_x] = MAP_FLOOR;
 		game->map->pickups--;
 		if (!game->map->pickups)
 		{

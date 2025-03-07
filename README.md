@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-	<b><i>Small skeleton themed 2D game 🎮 featuring mlx42.</i></b><br>
+	<b><i>Simple skeleton themed 2D game 🎮 featuring mlx42.</i></b><br>
 </p>
 
 <p align="center">

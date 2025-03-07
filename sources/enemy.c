@@ -30,7 +30,7 @@ static int	get_floor_tiles(char **matrix)
 		j = 0;
 		while (matrix[i][j])
 		{
-			if (matrix[i][j] == FLOOR)
+			if (matrix[i][j] == MAP_FLOOR)
 				amount++;
 			j++;
 		}
@@ -52,12 +52,12 @@ void	draw_enemies(t_solong *game)
 	{
 		x = randomize_coordinates(game->map->width);
 		y = randomize_coordinates(game->map->height);
-		if (game->map->matrix[y][x] != FLOOR)
+		if (game->map->matrix[y][x] != MAP_FLOOR)
 			continue ;
 		else if (rand() % 4 != 0)
 		{
 			draw_image(IMG_ENEMY, x, y, game);
-			game->map->matrix[y][x] = FLOOR;
+			game->map->matrix[y][x] = MAP_FLOOR;
 		}
 		i++;
 	}

@@ -27,13 +27,21 @@
 
 typedef enum e_element
 {
-	PLAYER = 80,
-	ENEMY = 88,
-	PICKUP = 67,
-	FLOOR = 48,
-	WALL = 49,
-	EXIT = 69
+	MAP_PLAYER = 80,
+	MAP_ENEMY = 88,
+	MAP_PICKUP = 67,
+	MAP_FLOOR = 48,
+	MAP_WALL = 49,
+	MAP_EXIT = 69
 }	t_element;
+
+typedef enum e_movement
+{
+	MOVE_UP,
+	MOVE_DOWN,
+	MOVE_LEFT,
+	MOVE_RIGHT,
+}	t_movement;
 
 typedef struct s_mapinfo
 {

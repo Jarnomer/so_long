@@ -78,8 +78,8 @@ SOURCES := main \
            play \
            free \
            error \
-		   player \
 		   enemy \
+		   anim \
 		   ai
 
 SOURCES := $(addsuffix .c, $(SOURCES))

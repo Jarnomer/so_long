@@ -12,7 +12,7 @@
 
 #include <so_long.h>
 
-static void	game_over(void *param)
+static void	set_game_over(void *param)
 {
 	t_solong	*game;
 
@@ -24,45 +24,43 @@ static void	game_over(void *param)
 	exit(NOERROR);
 }
 
-static void	draw_floor(int y, int x, t_solong *game)
+static void	draw_floor(int dst_y, int dst_x, t_solong *game)
 {
-	draw_image(IMG_FLOOR, x, y, game);
-	game->map->matrix[y][x] = FLOOR;
+	draw_image(IMG_FLOOR, dst_x, dst_y, game);
+	game->map->matrix[dst_y][dst_x] = MAP_FLOOR;
 }
 
 static void	move_enemy(int dst_y, int dst_x, int direction, t_solong *game)
 {
 	if (dst_y == game->map->play_y && dst_x == game->map->play_x)
-		game_over(game);
-	else if (game->map->matrix[dst_y][dst_x] != FLOOR)
+		set_game_over(game);
+	else if (game->map->matrix[dst_y][dst_x] != MAP_FLOOR)
 		return ;
-	if (direction == 0)
-		draw_floor(dst_y + 1, dst_x, game);
-	else if (direction == 1)
-		draw_floor(dst_y, dst_x + 1, game);
-	else if (direction == 2)
+	else if (direction == MOVE_UP)
 		draw_floor(dst_y - 1, dst_x, game);
-	else if (direction == 3)
+	if (direction == MOVE_DOWN)
+		draw_floor(dst_y + 1, dst_x, game);
+	else if (direction == MOVE_LEFT)
+		draw_floor(dst_y, dst_x + 1, game);
+	else if (direction == MOVE_RIGHT)
 		draw_floor(dst_y, dst_x - 1, game);
 	draw_image(IMG_ENEMY, dst_x, dst_y, game);
-	game->map->matrix[dst_y][dst_x] = ENEMY;
+	game->map->matrix[dst_y][dst_x] = MAP_ENEMY;
 }
 
 static void	randomize_movement(int y, int x, t_solong *game)
 {
 	int	direction;
 
-	if (rand() % 100 != 0)
-		return ;
-	direction = rand() % 4;
-	if (direction == 0)
+	direction = rand() % 5;
+	if (direction == MOVE_UP)
 		move_enemy(y - 1, x, direction, game);
-	else if (direction == 1)
-		move_enemy(y, x - 1, direction, game);
-	else if (direction == 2)
+	else if (direction == MOVE_DOWN)
 		move_enemy(y + 1, x, direction, game);
-	else if (direction == 3)
+	else if (direction == MOVE_LEFT)
 		move_enemy(y, x + 1, direction, game);
+	else if (direction == MOVE_RIGHT)
+		move_enemy(y, x - 1, direction, game);
 }
 
 void	move_enemies(void *param)
@@ -78,7 +76,7 @@ void	move_enemies(void *param)
 		x = 0;
 		while (++x < game->map->width - 1)
 		{
-			if (game->map->matrix[y][x] == ENEMY)
+			if (game->map->matrix[y][x] == MAP_ENEMY)
 			{
 				while (rand() % 4 != 0)
 					randomize_movement(y, x, game);
