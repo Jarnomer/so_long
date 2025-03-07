@@ -14,6 +14,12 @@
 
 static bool	game_over(t_mapinfo *map, t_solong *game)
 {
+	if (map->matrix[map->player_y][map->player_x] == MAP_ENEMY)
+	{
+		ft_printf("%sYou lost the game, the skeletons got you!\n%s",
+			BOLD_RED, RESET);
+		return (true);
+	}
 	if (map->is_escapable == true
 		&& map->matrix[map->player_y][map->player_x] == MAP_EXIT)
 	{

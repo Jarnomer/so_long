@@ -80,7 +80,7 @@ SOURCES := main \
            error \
            utils \
            anim \
-           ai
+           enemy
 
 SOURCES := $(addsuffix .c, $(SOURCES))
 
