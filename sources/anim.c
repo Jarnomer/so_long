@@ -58,6 +58,6 @@ void	animate_player(void *param)
 			anim->player_frame += anim->direction;
 		}
 	}
-	draw_image(IMG_PLAYER + anim->player_frame,
+	safe_draw(IMG_PLAYER + anim->player_frame,
 		game->map->player_x, game->map->player_y, game);
 }

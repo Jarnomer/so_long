@@ -12,28 +12,23 @@
 
 #include <so_long.h>
 
-static void	set_game_over(void *param)
+static void	game_over(t_solong *game)
 {
-	t_solong	*game;
-
-	game = param;
 	ft_printf("%sYou lost the game, the skeletons got you!\n%s",
 		BOLD_RED, RESET);
-	mlx_close_window(game->mlx);
-	self_destruct(game);
-	exit(NOERROR);
+	close_window(game);
 }
 
 static void	draw_floor(int dst_y, int dst_x, t_solong *game)
 {
-	draw_image(IMG_FLOOR, dst_x, dst_y, game);
+	safe_draw(IMG_FLOOR, dst_x, dst_y, game);
 	game->map->matrix[dst_y][dst_x] = MAP_FLOOR;
 }
 
 static void	move_enemy(int dst_y, int dst_x, int direction, t_solong *game)
 {
 	if (dst_y == game->map->player_y && dst_x == game->map->player_x)
-		set_game_over(game);
+		game_over(game);
 	if (game->map->matrix[dst_y][dst_x] != MAP_FLOOR)
 		return ;
 	if (direction == MOVE_UP)
@@ -44,7 +39,7 @@ static void	move_enemy(int dst_y, int dst_x, int direction, t_solong *game)
 		draw_floor(dst_y, dst_x + 1, game);
 	else
 		draw_floor(dst_y, dst_x - 1, game);
-	draw_image(IMG_ENEMY, dst_x, dst_y, game);
+	safe_draw(IMG_ENEMY, dst_x, dst_y, game);
 	game->map->matrix[dst_y][dst_x] = MAP_ENEMY;
 }
 
@@ -52,7 +47,7 @@ static void	randomize_movement(int y, int x, t_solong *game)
 {
 	int	direction;
 
-	direction = rand() % 4;
+	direction = random_number(4);
 	if (direction == MOVE_UP)
 		move_enemy(y + 1, x, direction, game);
 	else if (direction == MOVE_DOWN)
@@ -78,9 +73,9 @@ void	move_enemies(void *param)
 		{
 			if (game->map->matrix[y][x] == MAP_ENEMY)
 			{
-				if (rand() % 2 != 0)
+				if (random_number(5) != 0)
 					randomize_movement(y, x, game);
-			}	
+			}
 		}
 	}
 }

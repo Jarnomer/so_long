@@ -60,7 +60,7 @@ VLGFLAGS := --leak-check=full \
             --show-leak-kinds=all \
             --track-origins=yes \
             --track-fds=yes \
-			--suppressions=$(SUPPFILE) \
+            --suppressions=$(SUPPFILE) \
             --log-file=$(LEAKSLOG) \
             --verbose
 
@@ -78,9 +78,9 @@ SOURCES := main \
            play \
            free \
            error \
-		   enemy \
-		   anim \
-		   ai
+           utils \
+           anim \
+           ai
 
 SOURCES := $(addsuffix .c, $(SOURCES))
 

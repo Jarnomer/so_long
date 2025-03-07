@@ -1,23 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   enemy.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/17 14:00:38 by jmertane          #+#    #+#             */
-/*   Updated: 2024/03/17 14:00:44 by jmertane         ###   ########.fr       */
+/*   Created: 2024/02/11 21:19:15 by jmertane          #+#    #+#             */
+/*   Updated: 2024/03/18 20:30:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <so_long.h>
 
-static inline int	randomize_coordinates(int treshold)
+int	random_number(int modulator)
 {
-	return (rand() % treshold);
+	srand((unsigned int)time(NULL));
+	return (rand() % modulator);
 }
 
-static int	get_floor_tiles(char **matrix)
+void	safe_draw(t_image i, int x, int y, t_solong *game)
+{
+	x *= game->cellsize;
+	y *= game->cellsize;
+	if (mlx_image_to_window(game->mlx, game->asset[i], x, y) == -1)
+		error_exit(ERR_MLX, MSG_MLX, game);
+}
+
+void	close_window(void *param)
+{
+	t_solong	*game;
+
+	game = param;
+	mlx_close_window(game->mlx);
+	self_destruct(game);
+	exit(NOERROR);
+}
+
+int	get_floor_tiles(char **matrix)
 {
 	int	amount;
 	int	i;
@@ -37,28 +56,4 @@ static int	get_floor_tiles(char **matrix)
 		i++;
 	}
 	return (amount);
-}
-
-void	draw_enemies(t_solong *game)
-{
-	int	amount;
-	int	x;
-	int	y;
-	int	i;
-
-	i = 0;
-	amount = get_floor_tiles(game->map->matrix) / ENEMY_FREQUENCY;
-	while (i < amount)
-	{
-		x = randomize_coordinates(game->map->width);
-		y = randomize_coordinates(game->map->height);
-		if (game->map->matrix[y][x] != MAP_FLOOR)
-			continue ;
-		else if (rand() % 4 != 0)
-		{
-			draw_image(IMG_ENEMY, x, y, game);
-			game->map->matrix[y][x] = MAP_FLOOR;
-		}
-		i++;
-	}
 }

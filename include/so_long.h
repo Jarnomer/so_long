@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include <errno.h>
+# include <time.h>
 
 // One enemy per X floor tiles
 # define ENEMY_FREQUENCY 20
@@ -72,6 +73,7 @@ typedef struct s_solong
 	int			cellsize;
 	t_mapinfo	*map;
 	mlx_t		*mlx;
+	bool		is_gameover;
 	int			moves_count;
 	mlx_image_t	*moves_display;
 	mlx_image_t	*asset[GAME_ASSETS];
@@ -84,13 +86,15 @@ void	read_map(t_mapinfo *map, t_solong *game);
 void	test_map(t_mapinfo *map, t_solong *game);
 void	load_assets(t_solong *game);
 void	draw_assets(t_solong *game);
-void	draw_enemies(t_solong *game);
-void	draw_image(t_image i, int x, int y, t_solong *game);
 void	play_game(t_solong *game);
 void	error_exit(int errcode, char *errmsg, t_solong *game);
 void	self_destruct(t_solong *game);
 void	print_moves(int moves, t_solong *game);
 void	animate_player(void *param);
 void	move_enemies(void *param);
+void	close_window(void *param);
+int		random_number(int modulator);
+void	safe_draw(t_image i, int x, int y, t_solong *game);
+int		get_floor_tiles(char **matrix);
 
 #endif
