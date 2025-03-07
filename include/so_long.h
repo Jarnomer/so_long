@@ -73,7 +73,6 @@ typedef struct s_solong
 	int			cellsize;
 	t_mapinfo	*map;
 	mlx_t		*mlx;
-	bool		is_gameover;
 	int			moves_count;
 	mlx_image_t	*moves_display;
 	mlx_image_t	*asset[GAME_ASSETS];
