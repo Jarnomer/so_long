@@ -24,8 +24,8 @@
 # include <errno.h>
 # include <time.h>
 
-// One enemy per X floor tiles
-# define ENEMY_FREQUENCY 20
+# define ENEMY_FREQUENCY 20  // 20 -> 1 enemy / 20 floor tiles ...
+# define ENEMY_MOVE_CHANCE 3 // 2 = 50%, 3 = 67%, 4 = 75% ...
 
 typedef enum e_element
 {

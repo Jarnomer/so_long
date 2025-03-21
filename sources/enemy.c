@@ -73,7 +73,7 @@ void	move_enemies(void *param)
 		{
 			if (game->map->matrix[y][x] == MAP_ENEMY)
 			{
-				if (random_number(5) != 0)
+				if (random_number(ENEMY_MOVE_CHANCE))
 					randomize_movement(y, x, game);
 			}
 		}

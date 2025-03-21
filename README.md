@@ -21,6 +21,7 @@
 <div align="center">
 
 ## Table of Contents
+
 [📝 General](#-general)
 [🛠️ Build](#️-build)
 [⚡ Usage](#-usage)
@@ -71,7 +72,83 @@ Be careful! If you take your time the `enemies` start to `multiple`.
 
 ## 🚀 Details
 
-[RESERVED]
+After initialization, `open_map` validates the file and `read_map` checks for map artifacts.
+
+```c
+static void read_file(t_mapinfo *map, t_solong *game)
+{
+  while (true)
+  {
+    map->buff = get_next_line(map->fd);
+    if (!map->buff)
+      break ;
+    if (*map->buff == '\n')
+      error_exit(ERR_MAP, MSG_LINE, game);
+    map->temp = ft_strjoin(map->read, map->buff);
+    if (!map->temp)
+      error_exit(ERR_MEM, MSG_MEM, game);
+    free(map->read);
+    map->read = map->temp;
+    free(map->buff);
+  }
+  if (!*map->read)
+    error_exit(ERR_MAP, MSG_EMPTY, game);
+  else if (map->read[ft_strlen(map->read) - 1] == '\n')
+    error_exit(ERR_MAP, MSG_LINE, game);
+}
+```
+
+Then `test_map` uses `floodfill` to make sure all pickups are collectable and exit is reachable.
+
+```c
+static void clear_pickups(char **duplex, int x, int y)
+{
+  static const char *pickup_or_floor = "0C";
+  static const char pickup_mark = 'X';
+
+  duplex[y][x] = pickup_mark;
+  if (ft_strchr(pickup_or_floor, duplex[y + 1][x]))
+    clear_pickups(duplex, x, y + 1);
+  if (ft_strchr(pickup_or_floor, duplex[y - 1][x]))
+    clear_pickups(duplex, x, y - 1);
+  if (ft_strchr(pickup_or_floor, duplex[y][x + 1]))
+    clear_pickups(duplex, x + 1, y);
+  if (ft_strchr(pickup_or_floor, duplex[y][x - 1]))
+    clear_pickups(duplex, x - 1, y);
+  return ;
+}
+```
+
+Once map is verified, `assests` are loaded and drawn to mlx window for `play_game` to apply hooks.
+
+```c
+void load_assets(t_solong *game)
+{
+  int width;
+  int height;
+
+  width = CELL_SIZE * game->map->width;
+  height = CELL_SIZE * game->map->height;
+  game->mlx = mlx_init(width, height, "so_long", false);
+  if (!game->mlx)
+    error_exit(ERR_MLX, MSG_MLX, game);
+  mlx_get_monitor_size(0, &game->screen_width, &game->screen_height);
+  if (width > game->screen_width || height > game->screen_height)
+    alter_window_settings(game->map, game);
+  load_textures(game);
+}
+```
+
+```c
+void play_game(t_solong *game)
+{
+  mlx_close_hook(game->mlx, &close_window, game);
+  mlx_key_hook(game->mlx, &control_keys, game);
+  mlx_loop_hook(game->mlx, animate_player, game);
+  mlx_loop_hook(game->mlx, move_enemies, game);
+  mlx_loop(game->mlx);
+}
+```
 
 ## ♻️ Resources
 
