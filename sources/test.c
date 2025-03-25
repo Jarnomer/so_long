@@ -62,7 +62,7 @@ static void	clear_pickups(char **duplex, int x, int y)
 void	test_map(t_mapinfo *map, t_solong *game)
 {
 	clear_pickups(map->duplex, map->player_x, map->player_y);
-	verify_map(MAP_PICKUP, MSG_PICKUP, map, game);
+	verify_map(MAP_PICKUP, MSG_PICK, map, game);
 	clear_exit(map->duplex, map->player_x, map->player_y);
-	verify_map(MAP_EXIT, MSG_EXIT, map, game);
+	verify_map(MAP_EXIT, MSG_PATH, map, game);
 }
